@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #0A0A0A;
+    color: #F5F0ED;
+    font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Black Han Sans', Impact, 'Arial Black', sans-serif;
+  }
+}
+
+@layer components {
+  .btn-angled {
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    display: inline-block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    border: none;
+    outline: none;
+  }
+
+  .btn-red {
+    background-color: #D81E1E;
+    color: #F5F0ED;
+    padding: 12px 28px;
+  }
+
+  .btn-red:hover {
+    background-color: #FF2020;
+  }
+
+  .btn-outline-white {
+    background-color: transparent;
+    color: #F5F0ED;
+    padding: 10px 26px;
+    box-shadow: inset 0 0 0 2px #F5F0ED;
+  }
+
+  .btn-outline-white:hover {
+    background-color: rgba(245,240,237,0.1);
+  }
+
+  .btn-outline-gold {
+    background-color: transparent;
+    color: #C0A050;
+    padding: 10px 26px;
+    box-shadow: inset 0 0 0 2px #C0A050;
+  }
+
+  .btn-outline-gold:hover {
+    background-color: rgba(192,160,80,0.1);
+  }
+}
