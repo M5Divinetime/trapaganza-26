@@ -241,9 +241,10 @@ function Tickets() {
               $10
             </span>
             <p className="text-[#888] text-sm uppercase tracking-widest mb-4">Per person</p>
-            <Link to="/tickets" className="btn-angled btn-red text-base">
+            <a href="https://buy.stripe.com/cNi3cv4sZ6hc5lIfim43S02"
+               target="_blank" rel="noopener noreferrer" className="btn-angled btn-red text-base">
               Buy Now
-            </Link>
+            </a>
           </div>
         </div>
       </div>

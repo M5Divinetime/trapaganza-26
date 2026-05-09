@@ -334,10 +334,36 @@ function StepPayment({ quantities, details, onNext, onBack }) {
     return Object.keys(e).length === 0
   }
 
+  const STRIPE_LINKS = {
+    ga:       'https://buy.stripe.com/cNi3cv4sZ6hc5lIfim43S02',
+    gold:     null, // add Stripe link when ready
+    platinum: null, // add Stripe link when ready
+  }
+
   const handlePay = () => {
     if (!validate()) return
+    // Determine which Stripe link to use based on cart contents
+    const hasGA       = (quantities['ga']       || 0) > 0
+    const hasGold     = (quantities['gold']      || 0) > 0
+    const hasPlatinum = (quantities['platinum']  || 0) > 0
+
+    // GA only — go straight to Stripe
+    if (hasGA && !hasGold && !hasPlatinum && STRIPE_LINKS.ga) {
+      window.location.href = STRIPE_LINKS.ga
+      return
+    }
+    // Gold only
+    if (hasGold && !hasGA && !hasPlatinum && STRIPE_LINKS.gold) {
+      window.location.href = STRIPE_LINKS.gold
+      return
+    }
+    // Platinum only
+    if (hasPlatinum && !hasGA && !hasGold && STRIPE_LINKS.platinum) {
+      window.location.href = STRIPE_LINKS.platinum
+      return
+    }
+    // Mixed cart or missing link — simulate for now
     setProcessing(true)
-    // Simulate payment processing
     setTimeout(() => { setProcessing(false); onNext() }, 2200)
   }
 
