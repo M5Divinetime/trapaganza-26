@@ -315,76 +315,27 @@ function StepDetails({ quantities, details, setDetails, onNext, onBack }) {
 }
 
 // ─── Step 3: Payment ──────────────────────────────────────────────────────────
-function StepPayment({ quantities, details, onNext, onBack }) {
-  const total  = TICKET_TYPES.reduce((s, t) => s + t.price * (quantities[t.id] || 0), 0)
-  const [card, setCard]   = useState({ number: '', expiry: '', cvc: '', name: '' })
-  const [errors, setErrors] = useState({})
-  const [processing, setProcessing] = useState(false)
+const STRIPE_LINKS = {
+  ga:       'https://buy.stripe.com/cNi3cv4sZ6hc5lIfim43S02',
+  gold:     'https://buy.stripe.com/14AcN5gbH494g0m0ns43S03',
+  platinum: 'https://buy.stripe.com/3cI6oH0cJcFAbK6c6a43S04',
+}
 
-  const setC = (k, v) => setCard(prev => ({ ...prev, [k]: v }))
-
-  const fmtCard = v => v.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim().slice(0, 19)
-  const fmtExp  = v => v.replace(/\D/g, '').replace(/^(\d{2})(\d)/, '$1/$2').slice(0, 5)
-
-  const validate = () => {
-    const e = {}
-    if (card.number.replace(/\s/g, '').length < 16) e.number = 'Enter a valid card number'
-    if (card.expiry.length < 5) e.expiry = 'Enter expiry MM/YY'
-    if (card.cvc.length < 3)   e.cvc    = 'Enter 3-digit CVC'
-    if (!card.name.trim())     e.name   = 'Required'
-    setErrors(e)
-    return Object.keys(e).length === 0
-  }
-
-  const STRIPE_LINKS = {
-    ga:       'https://buy.stripe.com/cNi3cv4sZ6hc5lIfim43S02',
-    gold:     'https://buy.stripe.com/14AcN5gbH494g0m0ns43S03',
-    platinum: 'https://buy.stripe.com/3cI6oH0cJcFAbK6c6a43S04',
-  }
+function StepPayment({ quantities, onBack }) {
+  const total = TICKET_TYPES.reduce((s, t) => s + t.price * (quantities[t.id] || 0), 0)
 
   const handlePay = () => {
-    if (!validate()) return
-    // Determine which Stripe link to use based on cart contents
     const hasGA       = (quantities['ga']       || 0) > 0
-    const hasGold     = (quantities['gold']      || 0) > 0
-    const hasPlatinum = (quantities['platinum']  || 0) > 0
+    const hasGold     = (quantities['gold']     || 0) > 0
+    const hasPlatinum = (quantities['platinum'] || 0) > 0
 
-    // GA only — go straight to Stripe
-    if (hasGA && !hasGold && !hasPlatinum && STRIPE_LINKS.ga) {
-      window.location.href = STRIPE_LINKS.ga
-      return
-    }
-    // Gold only
-    if (hasGold && !hasGA && !hasPlatinum && STRIPE_LINKS.gold) {
-      window.location.href = STRIPE_LINKS.gold
-      return
-    }
-    // Platinum only
-    if (hasPlatinum && !hasGA && !hasGold && STRIPE_LINKS.platinum) {
-      window.location.href = STRIPE_LINKS.platinum
-      return
-    }
-    // Mixed cart or missing link — simulate for now
-    setProcessing(true)
-    setTimeout(() => { setProcessing(false); onNext() }, 2200)
+    if (hasGA       && !hasGold && !hasPlatinum) { window.location.href = STRIPE_LINKS.ga;       return }
+    if (hasGold     && !hasGA  && !hasPlatinum)  { window.location.href = STRIPE_LINKS.gold;     return }
+    if (hasPlatinum && !hasGA  && !hasGold)       { window.location.href = STRIPE_LINKS.platinum; return }
+
+    // Mixed cart — send to GA link as default
+    window.location.href = STRIPE_LINKS.ga
   }
-
-  const CField = ({ id, label, placeholder, value, onChange, maxLen }) => (
-    <div className="flex flex-col gap-1">
-      <label className="text-xs uppercase tracking-widest text-[#888] font-bold">{label}</label>
-      <input
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        maxLength={maxLen}
-        className="bg-[#111] border px-4 py-3 text-[#F5F0ED] text-sm outline-none transition-all"
-        style={{ borderColor: errors[id] ? '#D81E1E' : '#2a2a2a', fontFamily: 'Barlow Condensed, sans-serif' }}
-        onFocus={e => e.target.style.borderColor = '#D81E1E'}
-        onBlur={e  => e.target.style.borderColor = errors[id] ? '#D81E1E' : '#2a2a2a'}
-      />
-      {errors[id] && <span className="text-[#D81E1E] text-xs">{errors[id]}</span>}
-    </div>
-  )
 
   return (
     <div className="max-w-xl mx-auto">
@@ -407,7 +358,7 @@ function StepPayment({ quantities, details, onNext, onBack }) {
         </div>
       </div>
 
-      {/* Payment form */}
+      {/* Stripe redirect panel */}
       <div className="border border-[#2a2a2a] p-8" style={{ backgroundColor: '#181818' }}>
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-[#F5F0ED] text-2xl" style={{ fontFamily: '"Black Han Sans", Impact, sans-serif' }}>
@@ -418,52 +369,20 @@ function StepPayment({ quantities, details, onNext, onBack }) {
           </span>
         </div>
 
-        {/* Express pay */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          {[{ label: '🍎 Apple Pay', id: 'apple' }, { label: '🅖 Google Pay', id: 'google' }].map(m => (
-            <button key={m.id}
-                    className="py-3 text-sm font-bold uppercase tracking-widest border border-[#2a2a2a] text-[#ccc] transition-colors hover:border-[#D81E1E] hover:text-[#F5F0ED]"
-                    style={{ backgroundColor: '#111' }}>
-              {m.label}
-            </button>
-          ))}
-        </div>
+        <p className="text-[#888] text-sm mb-8 leading-relaxed">
+          You'll be taken to Stripe's secure checkout to complete your payment. Accepts credit/debit card, Apple Pay, and Google Pay.
+        </p>
 
-        <div className="flex items-center gap-3 mb-6">
-          <div className="flex-1 h-[1px] bg-[#2a2a2a]" />
-          <span className="text-[#555] text-xs uppercase tracking-widest">or pay by card</span>
-          <div className="flex-1 h-[1px] bg-[#2a2a2a]" />
-        </div>
-
-        <div className="flex flex-col gap-4">
-          <CField id="name"   label="Name on Card"  placeholder="Full name"         value={card.name}
-                  onChange={e => setC('name', e.target.value)} />
-          <CField id="number" label="Card Number"   placeholder="1234 5678 9012 3456" value={card.number}
-                  onChange={e => setC('number', fmtCard(e.target.value))} maxLen={19} />
-          <div className="grid grid-cols-2 gap-4">
-            <CField id="expiry" label="Expiry" placeholder="MM/YY" value={card.expiry}
-                    onChange={e => setC('expiry', fmtExp(e.target.value))} maxLen={5} />
-            <CField id="cvc"    label="CVC"    placeholder="123"   value={card.cvc}
-                    onChange={e => setC('cvc', e.target.value.replace(/\D/g, '').slice(0, 4))} />
-          </div>
-        </div>
-
-        <div className="flex gap-4 mt-8">
-          <button onClick={onBack} disabled={processing}
+        <div className="flex gap-4">
+          <button onClick={onBack}
                   className="btn-angled btn-outline-white py-3 px-6 text-sm font-bold uppercase tracking-widest"
-                  style={{ clipPath: 'polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)', opacity: processing ? 0.4 : 1 }}>
+                  style={{ clipPath: 'polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)' }}>
             ← Back
           </button>
-          <button onClick={handlePay} disabled={processing}
+          <button onClick={handlePay}
                   className="btn-angled btn-red flex-1 py-3 text-base font-bold uppercase tracking-widest transition-all"
-                  style={{ clipPath: 'polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)',
-                           opacity: processing ? 0.8 : 1 }}>
-            {processing ? (
-              <span className="flex items-center justify-center gap-2">
-                <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Processing...
-              </span>
-            ) : `Complete Purchase — ${fmt(total)}`}
+                  style={{ clipPath: 'polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)' }}>
+            Complete Purchase — {fmt(total)}
           </button>
         </div>
       </div>
@@ -605,7 +524,7 @@ export default function Tickets() {
 
         {step === 0 && <StepSelect quantities={quantities} setQuantities={setQuantities} onNext={next} />}
         {step === 1 && <StepDetails quantities={quantities} details={details} setDetails={setDetails} onNext={next} onBack={back} />}
-        {step === 2 && <StepPayment quantities={quantities} details={details} onNext={next} onBack={back} />}
+        {step === 2 && <StepPayment quantities={quantities} onBack={back} />}
         {step === 3 && <StepConfirmation quantities={quantities} details={details} />}
       </div>
     </div>
