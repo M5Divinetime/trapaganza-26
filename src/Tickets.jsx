@@ -212,6 +212,26 @@ function StepSelect({ quantities, setQuantities, onNext }) {
   )
 }
 
+// ─── Reusable field (must live outside any render fn to keep focus) ───────────
+function DetailField({ id, label, type = 'text', placeholder = '', value, onChange, error }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <label className="text-xs uppercase tracking-widest text-[#888] font-bold">{label}</label>
+      <input
+        type={type}
+        value={value}
+        onChange={e => onChange(id, e.target.value)}
+        placeholder={placeholder}
+        className="bg-[#111] border px-4 py-3 text-[#F5F0ED] text-sm outline-none transition-all"
+        style={{ borderColor: error ? '#D81E1E' : '#2a2a2a', fontFamily: 'Barlow Condensed, sans-serif' }}
+        onFocus={e => e.target.style.borderColor = '#D81E1E'}
+        onBlur={e  => e.target.style.borderColor = error ? '#D81E1E' : '#2a2a2a'}
+      />
+      {error && <span className="text-[#D81E1E] text-xs">{error}</span>}
+    </div>
+  )
+}
+
 // ─── Step 2: Your Details ─────────────────────────────────────────────────────
 function StepDetails({ quantities, details, setDetails, onNext, onBack }) {
   const needsVR    = (quantities['ga']       || 0) > 0
@@ -234,24 +254,6 @@ function StepDetails({ quantities, details, setDetails, onNext, onBack }) {
 
   const handleNext = () => { if (validate()) onNext() }
 
-  const Field = ({ id, label, type = 'text', placeholder = '' }) => (
-    <div className="flex flex-col gap-1">
-      <label className="text-xs uppercase tracking-widest text-[#888] font-bold">{label}</label>
-      <input
-        type={type}
-        value={details[id] || ''}
-        onChange={e => set(id, e.target.value)}
-        placeholder={placeholder}
-        className="bg-[#111] border px-4 py-3 text-[#F5F0ED] text-sm outline-none transition-all"
-        style={{ borderColor: errors[id] ? '#D81E1E' : '#2a2a2a',
-                 fontFamily: 'Barlow Condensed, sans-serif' }}
-        onFocus={e => e.target.style.borderColor = '#D81E1E'}
-        onBlur={e  => e.target.style.borderColor = errors[id] ? '#D81E1E' : '#2a2a2a'}
-      />
-      {errors[id] && <span className="text-[#D81E1E] text-xs">{errors[id]}</span>}
-    </div>
-  )
-
   return (
     <div className="max-w-xl mx-auto">
       <div className="border border-[#2a2a2a] p-8" style={{ backgroundColor: '#181818' }}>
@@ -260,23 +262,23 @@ function StepDetails({ quantities, details, setDetails, onNext, onBack }) {
           Your Details
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field id="firstName" label="First Name" placeholder="First" />
-          <Field id="lastName"  label="Last Name"  placeholder="Last" />
+          <DetailField id="firstName" label="First Name" placeholder="First" value={details.firstName || ''} onChange={set} error={errors.firstName} />
+          <DetailField id="lastName"  label="Last Name"  placeholder="Last"  value={details.lastName  || ''} onChange={set} error={errors.lastName} />
           <div className="sm:col-span-2">
-            <Field id="email"        label="Email Address"    type="email" placeholder="you@example.com" />
+            <DetailField id="email"        label="Email Address" type="email" placeholder="you@example.com"     value={details.email        || ''} onChange={set} error={errors.email} />
           </div>
           <div className="sm:col-span-2">
-            <Field id="confirmEmail" label="Confirm Email"    type="email" placeholder="Confirm your email" />
+            <DetailField id="confirmEmail" label="Confirm Email" type="email" placeholder="Confirm your email"  value={details.confirmEmail || ''} onChange={set} error={errors.confirmEmail} />
           </div>
           {needsVR && (
             <div className="sm:col-span-2">
-              <Field id="vrchat" label="VRChat Username" placeholder="Your VRChat display name" />
+              <DetailField id="vrchat" label="VRChat Username" placeholder="Your VRChat display name" value={details.vrchat || ''} onChange={set} error={errors.vrchat} />
             </div>
           )}
           {needsBrand && (
             <>
               <div className="sm:col-span-2">
-                <Field id="brand" label="Brand / Company Name" placeholder="Your brand or company" />
+                <DetailField id="brand" label="Brand / Company Name" placeholder="Your brand or company" value={details.brand || ''} onChange={set} error={errors.brand} />
               </div>
               <div className="sm:col-span-2 flex flex-col gap-1">
                 <label className="text-xs uppercase tracking-widest text-[#888] font-bold">Logo URL</label>
