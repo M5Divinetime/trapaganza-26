@@ -241,10 +241,9 @@ function Tickets() {
               $10
             </span>
             <p className="text-[#888] text-sm uppercase tracking-widest mb-4">Per person</p>
-            <a href="https://orchids.app/checkout?item=trapaganza-ga&price=10"
-               target="_blank" rel="noopener noreferrer" className="btn-angled btn-red text-base">
+            <Link to="/tickets" className="btn-angled btn-red text-base">
               Buy Now
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -286,10 +285,9 @@ function Sponsorships() {
               ))}
             </ul>
             <div className="mt-8">
-              <a href="https://orchids.app/checkout?item=trapaganza-gold&price=50"
-                 target="_blank" rel="noopener noreferrer" className="btn-angled btn-outline-gold text-sm">
+              <Link to="/tickets" className="btn-angled btn-outline-gold text-sm">
                 Claim Gold Spot
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -310,10 +308,9 @@ function Sponsorships() {
               ))}
             </ul>
             <div className="mt-8">
-              <a href="https://orchids.app/checkout?item=trapaganza-platinum&price=100"
-                 target="_blank" rel="noopener noreferrer" className="btn-angled btn-red text-sm">
+              <Link to="/tickets" className="btn-angled btn-red text-sm">
                 Claim Platinum Spot
-              </a>
+              </Link>
             </div>
           </div>
         </div>
