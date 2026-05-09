@@ -78,10 +78,9 @@ function Hero() {
           <img
             src="/trapaganza-promo.webp"
             alt="TRAPAGANZA — Trap Street Radio"
-            className="w-full object-cover"
+            className="w-full"
             style={{
-              aspectRatio: '16/7',
-              objectPosition: 'center',
+              display: 'block',
               boxShadow: '0 0 80px rgba(216,30,30,0.35), 0 0 20px rgba(216,30,30,0.2)',
               borderLeft: '3px solid #D81E1E',
               borderRight: '3px solid #D81E1E',
