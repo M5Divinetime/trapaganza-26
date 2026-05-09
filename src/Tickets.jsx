@@ -336,7 +336,7 @@ function StepPayment({ quantities, details, onNext, onBack }) {
 
   const STRIPE_LINKS = {
     ga:       'https://buy.stripe.com/cNi3cv4sZ6hc5lIfim43S02',
-    gold:     null, // add Stripe link when ready
+    gold:     'https://buy.stripe.com/14AcN5gbH494g0m0ns43S03',
     platinum: null, // add Stripe link when ready
   }
 
