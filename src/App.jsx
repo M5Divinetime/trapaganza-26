@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 
 // ─── useReveal hook ──────────────────────────────────────────────────────────
 function useReveal(options = {}) {
@@ -44,7 +45,7 @@ function Navbar() {
             </a>
           ))}
         </div>
-        <a href="#tickets" className="btn-angled btn-red text-sm">Get Tickets — $10</a>
+        <Link to="/tickets" className="btn-angled btn-red text-sm">Get Tickets — $10</Link>
       </div>
     </nav>
   )
@@ -90,7 +91,7 @@ function Hero() {
         </div>
 
         <div className="hero-ctas flex flex-wrap gap-4 justify-center mt-2">
-          <a href="#tickets" className="btn-angled btn-red text-base">Get Tickets — $10</a>
+          <Link to="/tickets" className="btn-angled btn-red text-base">Get Tickets — $10</Link>
           <a href="#sponsors" className="btn-angled btn-outline-white text-base">Become a Sponsor</a>
         </div>
       </div>
