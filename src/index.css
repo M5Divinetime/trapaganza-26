@@ -48,6 +48,8 @@
 
   .btn-red:hover {
     background-color: #FF2020;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(216,30,30,0.5);
   }
 
   .btn-outline-white {
@@ -59,6 +61,7 @@
 
   .btn-outline-white:hover {
     background-color: rgba(245,240,237,0.1);
+    transform: translateY(-2px);
   }
 
   .btn-outline-gold {
@@ -70,5 +73,147 @@
 
   .btn-outline-gold:hover {
     background-color: rgba(192,160,80,0.1);
+    transform: translateY(-2px);
   }
+}
+
+/* ── Keyframe animations ───────────────────────────────────────── */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 80px rgba(216,30,30,0.35), 0 0 20px rgba(216,30,30,0.2); }
+  50%       { box-shadow: 0 0 120px rgba(216,30,30,0.6), 0 0 40px rgba(216,30,30,0.4); }
+}
+
+@keyframes ghostPulse {
+  0%, 100% { opacity: 0.06; }
+  50%       { opacity: 0.11; }
+}
+
+@keyframes borderFlicker {
+  0%, 100% { border-color: #D81E1E; }
+  45%       { border-color: #FF2020; }
+  50%       { border-color: #8B0000; }
+  55%       { border-color: #FF2020; }
+}
+
+@keyframes countFlip {
+  0%   { transform: translateY(-8px); opacity: 0; }
+  100% { transform: translateY(0);    opacity: 1; }
+}
+
+/* ── Hero animations ───────────────────────────────────────────── */
+.hero-badge {
+  animation: fadeUp 0.6s ease both;
+  animation-delay: 0.1s;
+}
+
+.hero-image {
+  animation: fadeIn 0.9s ease both, glowPulse 4s ease-in-out 1s infinite;
+  animation-delay: 0.3s;
+}
+
+.hero-date {
+  animation: fadeUp 0.6s ease both;
+  animation-delay: 0.5s;
+}
+
+.hero-details {
+  animation: fadeUp 0.6s ease both;
+  animation-delay: 0.65s;
+}
+
+.hero-ctas {
+  animation: fadeUp 0.6s ease both;
+  animation-delay: 0.8s;
+}
+
+.ghost-number {
+  animation: ghostPulse 6s ease-in-out infinite;
+}
+
+/* ── Scroll-reveal base ────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* staggered children */
+.reveal-stagger > *:nth-child(1) { transition-delay: 0s; }
+.reveal-stagger > *:nth-child(2) { transition-delay: 0.1s; }
+.reveal-stagger > *:nth-child(3) { transition-delay: 0.2s; }
+.reveal-stagger > *:nth-child(4) { transition-delay: 0.3s; }
+.reveal-stagger > *:nth-child(5) { transition-delay: 0.4s; }
+
+/* ── Countdown flip ────────────────────────────────────────────── */
+.count-num {
+  display: inline-block;
+  animation: countFlip 0.2s ease both;
+}
+
+/* ── Artist card hover ─────────────────────────────────────────── */
+.artist-card {
+  transition: background-color 0.25s ease, border-left-color 0.25s ease, transform 0.25s ease;
+}
+
+.artist-card:hover {
+  background-color: #1f1f1f !important;
+  transform: translateY(-3px);
+}
+
+/* ── Sponsor card hover ────────────────────────────────────────── */
+.sponsor-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sponsor-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
 }
