@@ -85,6 +85,8 @@ function Hero() {
           <span>VRChat</span>
           <span className="text-[#D81E1E]">·</span>
           <span>Live Event</span>
+          <span className="text-[#D81E1E]">·</span>
+          <span>Hosted by <span className="text-[#F5F0ED]">Goddesz609vr</span></span>
         </div>
 
         <div className="hero-ctas flex flex-wrap gap-4 justify-center mt-2">
@@ -225,7 +227,7 @@ function Tickets() {
               TRAPAGANZA PASS
             </h3>
             <ul className="space-y-3">
-              {['Full event access in VRChat','Live sets from all performers','World entry link sent on purchase','Hosted by Trap Street Radio'].map((perk) => (
+              {['Full event access in VRChat','Live sets from all performers','World entry link sent on purchase','Hosted by Goddesz609vr'].map((perk) => (
                 <li key={perk} className="flex items-start gap-3 text-[#ccc] text-base">
                   <span className="text-[#D81E1E] font-bold mt-0.5">•</span>{perk}
                 </li>
