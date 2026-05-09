@@ -310,9 +310,10 @@ function Sponsorships() {
               ))}
             </ul>
             <div className="mt-8">
-              <Link to="/tickets" className="btn-angled btn-red text-sm">
+              <a href="https://buy.stripe.com/3cI6oH0cJcFAbK6c6a43S04"
+                 target="_blank" rel="noopener noreferrer" className="btn-angled btn-red text-sm">
                 Claim Platinum Spot
-              </Link>
+              </a>
             </div>
           </div>
         </div>
