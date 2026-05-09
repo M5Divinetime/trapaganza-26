@@ -74,12 +74,14 @@ function Hero() {
         </div>
 
         {/* Promo image */}
-        <div className="w-full max-w-2xl relative">
+        <div className="w-full relative">
           <img
             src="/trapaganza-promo.webp"
             alt="TRAPAGANZA — Trap Street Radio"
             className="w-full object-cover"
             style={{
+              aspectRatio: '16/7',
+              objectPosition: 'center',
               boxShadow: '0 0 80px rgba(216,30,30,0.35), 0 0 20px rgba(216,30,30,0.2)',
               borderLeft: '3px solid #D81E1E',
               borderRight: '3px solid #D81E1E',
