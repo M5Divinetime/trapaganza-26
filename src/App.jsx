@@ -55,7 +55,7 @@ function Hero() {
         style={{
           fontSize: 'clamp(200px, 40vw, 500px)',
           fontFamily: '"Black Han Sans", Impact, sans-serif',
-          color: 'rgba(180,10,10,0.07)',
+          color: 'rgba(180,10,10,0.06)',
           lineHeight: 1,
           top: '50%',
           left: '50%',
@@ -67,18 +67,24 @@ function Hero() {
         26
       </div>
 
-      <div className="relative z-10 flex flex-col items-center gap-6 px-4">
+      <div className="relative z-10 flex flex-col items-center gap-6 px-4 w-full max-w-5xl">
         {/* Badge */}
         <div className="border border-[#D81E1E] px-4 py-1 text-[#D81E1E] uppercase tracking-widest text-xs font-bold">
           Trap Street Radio Presents
         </div>
 
-        {/* Headline bar */}
-        <div className="border-l-4 border-r-4 border-[#D81E1E] px-8 py-2" style={{ backgroundColor: '#0A0A0A' }}>
-          <h1 style={{ fontFamily: '"Black Han Sans", Impact, sans-serif', fontSize: 'clamp(72px, 14vw, 180px)', lineHeight: 1, letterSpacing: '-0.02em' }}>
-            <span style={{ color: '#D81E1E' }}>TRAP</span>
-            <span style={{ color: '#F5F0ED' }}>AGANZA</span>
-          </h1>
+        {/* Promo image */}
+        <div className="w-full max-w-2xl relative">
+          <img
+            src="/trapaganza-promo.webp"
+            alt="TRAPAGANZA — Trap Street Radio"
+            className="w-full object-cover"
+            style={{
+              boxShadow: '0 0 80px rgba(216,30,30,0.35), 0 0 20px rgba(216,30,30,0.2)',
+              borderLeft: '3px solid #D81E1E',
+              borderRight: '3px solid #D81E1E',
+            }}
+          />
         </div>
 
         {/* Date */}
@@ -99,7 +105,7 @@ function Hero() {
         </div>
 
         {/* CTAs */}
-        <div className="flex flex-wrap gap-4 justify-center mt-4">
+        <div className="flex flex-wrap gap-4 justify-center mt-2">
           <a href="#tickets" className="btn-angled btn-red text-base">
             Get Tickets — $10
           </a>
