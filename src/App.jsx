@@ -71,8 +71,12 @@ function Hero() {
         </div>
 
         <div className="hero-image w-full relative">
-          <img src="/trapaganza-promo.webp" alt="TRAPAGANZA — Trap Street Radio"
-               className="w-full" style={{ display: 'block', borderLeft: '3px solid #D81E1E', borderRight: '3px solid #D81E1E' }} />
+          <video autoPlay muted loop playsInline
+                 className="w-full"
+                 style={{ display: 'block', borderLeft: '3px solid #D81E1E', borderRight: '3px solid #D81E1E',
+                          boxShadow: '0 0 80px rgba(216,30,30,0.35), 0 0 20px rgba(216,30,30,0.2)' }}>
+            <source src="/trapaganza-hero.mp4" type="video/mp4" />
+          </video>
         </div>
 
         <div className="hero-date text-[#F5F0ED] tracking-widest text-2xl md:text-3xl"
