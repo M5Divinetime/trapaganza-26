@@ -445,7 +445,7 @@ function StepConfirmation({ quantities, details }) {
 
       {/* Event info */}
       <div className="text-[#888] uppercase tracking-widest text-sm mb-8 flex justify-center gap-3 flex-wrap">
-        <span>05.23.26</span>
+        <span>06.13.26</span>
         <span className="text-[#D81E1E]">·</span>
         <span>8:30 PM</span>
         <span className="text-[#D81E1E]">·</span>
@@ -503,7 +503,7 @@ export default function Tickets() {
               TRAPAGANZA
             </div>
           </div>
-          <div className="text-[#555] text-xs uppercase tracking-widest hidden sm:block">05.23.26 · VRChat</div>
+          <div className="text-[#555] text-xs uppercase tracking-widest hidden sm:block">06.13.26 · VRChat</div>
         </div>
       </div>
 
@@ -516,7 +516,7 @@ export default function Tickets() {
               <span style={{ color: '#D81E1E' }}>GET YOUR</span>{' '}
               <span style={{ color: '#F5F0ED' }}>TICKETS</span>
             </h1>
-            <p className="text-[#555] uppercase tracking-widest text-xs mt-2">05.23.26 · 8:30 PM · VRChat</p>
+            <p className="text-[#555] uppercase tracking-widest text-xs mt-2">06.13.26 · 8:30 PM · VRChat</p>
           </div>
         )}
 

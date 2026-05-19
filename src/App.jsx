@@ -81,7 +81,7 @@ function Hero() {
 
         <div className="hero-date text-[#F5F0ED] tracking-widest text-2xl md:text-3xl"
              style={{ fontFamily: '"Courier New", Courier, monospace' }}>
-          05.23.26
+          06.13.26
         </div>
 
         <div className="hero-details flex flex-wrap justify-center gap-4 text-[#888] uppercase tracking-widest text-sm font-semibold">
@@ -105,7 +105,7 @@ function Hero() {
 
 // ─── Countdown ───────────────────────────────────────────────────────────────
 function Countdown() {
-  const TARGET = new Date('2026-05-23T20:30:00').getTime()
+  const TARGET = new Date('2026-06-13T20:30:00').getTime()
   const calc = () => {
     const diff = Math.max(0, TARGET - Date.now())
     return {
@@ -340,7 +340,7 @@ function Footer() {
         TRAPAGANZA
       </h2>
       <p className="text-[#666] uppercase tracking-widest text-sm mb-6"
-         style={{ fontFamily: 'Barlow Condensed, sans-serif' }}>05.23.26 · 8:30 PM · VRChat</p>
+         style={{ fontFamily: 'Barlow Condensed, sans-serif' }}>06.13.26 · 8:30 PM · VRChat</p>
       <div className="w-24 h-[2px] mx-auto mb-6" style={{ backgroundColor: '#D81E1E' }} />
       <p className="text-[#444] text-sm" style={{ fontFamily: 'Barlow Condensed, sans-serif' }}>
         © 2026 Trap Street Radio. All rights reserved.
