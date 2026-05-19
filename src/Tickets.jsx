@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { supabase } from './supabase.js'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 const TICKET_TYPES = [
@@ -321,19 +322,40 @@ const STRIPE_LINKS = {
   platinum: 'https://buy.stripe.com/3cI6oH0cJcFAbK6c6a43S04',
 }
 
-function StepPayment({ quantities, onBack }) {
+function StepPayment({ quantities, details, onBack }) {
   const total = TICKET_TYPES.reduce((s, t) => s + t.price * (quantities[t.id] || 0), 0)
+  const [saving, setSaving] = useState(false)
 
-  const handlePay = () => {
+  const handlePay = async () => {
     const hasGA       = (quantities['ga']       || 0) > 0
     const hasGold     = (quantities['gold']     || 0) > 0
     const hasPlatinum = (quantities['platinum'] || 0) > 0
 
+    // Save pending order to Supabase before redirecting
+    setSaving(true)
+    try {
+      const orderType = hasGA ? 'ga' : hasGold ? 'gold' : 'platinum'
+      const qty       = TICKET_TYPES.reduce((s, t) => s + (quantities[t.id] || 0), 0)
+      await supabase.from('orders').insert([{
+        order_number: `TSR-${Math.floor(100000 + Math.random() * 900000)}`,
+        name:    `${details.firstName || ''} ${details.lastName || ''}`.trim(),
+        email:   details.email    || '',
+        vrchat:  details.vrchat   || null,
+        brand:   details.brand    || null,
+        logo:    details.logo     || null,
+        type:    orderType,
+        qty,
+        total,
+        status: 'pending',
+      }])
+    } catch (e) {
+      // Non-blocking — still redirect even if save fails
+    }
+    setSaving(false)
+
     if (hasGA       && !hasGold && !hasPlatinum) { window.location.href = STRIPE_LINKS.ga;       return }
     if (hasGold     && !hasGA  && !hasPlatinum)  { window.location.href = STRIPE_LINKS.gold;     return }
     if (hasPlatinum && !hasGA  && !hasGold)       { window.location.href = STRIPE_LINKS.platinum; return }
-
-    // Mixed cart — send to GA link as default
     window.location.href = STRIPE_LINKS.ga
   }
 
@@ -379,10 +401,15 @@ function StepPayment({ quantities, onBack }) {
                   style={{ clipPath: 'polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)' }}>
             ← Back
           </button>
-          <button onClick={handlePay}
+          <button onClick={handlePay} disabled={saving}
                   className="btn-angled btn-red flex-1 py-3 text-base font-bold uppercase tracking-widest transition-all"
-                  style={{ clipPath: 'polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)' }}>
-            Complete Purchase — {fmt(total)}
+                  style={{ clipPath: 'polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)', opacity: saving ? 0.7 : 1 }}>
+            {saving ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                Saving...
+              </span>
+            ) : `Complete Purchase — ${fmt(total)}`}
           </button>
         </div>
       </div>
@@ -524,7 +551,7 @@ export default function Tickets() {
 
         {step === 0 && <StepSelect quantities={quantities} setQuantities={setQuantities} onNext={next} />}
         {step === 1 && <StepDetails quantities={quantities} details={details} setDetails={setDetails} onNext={next} onBack={back} />}
-        {step === 2 && <StepPayment quantities={quantities} onBack={back} />}
+        {step === 2 && <StepPayment quantities={quantities} details={details} onBack={back} />}
         {step === 3 && <StepConfirmation quantities={quantities} details={details} />}
       </div>
     </div>
