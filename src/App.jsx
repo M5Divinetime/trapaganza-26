@@ -187,6 +187,11 @@ function Lineup() {
           <ArtistCard name="MEME SHONTE"    role="Artist" />
           <ArtistCard name="LAYDI GENEVIEVE" role="Artist" className="col-span-2" />
         </div>
+
+        <p className="text-center mt-4 uppercase tracking-widest text-sm font-bold"
+           style={{ color: '#D81E1E', fontFamily: 'Barlow Condensed, sans-serif', letterSpacing: '0.3em' }}>
+          & Many More
+        </p>
       </div>
     </section>
   )
