@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import MusicPlayer from './MusicPlayer.jsx'
+import { ParticleCanvas, ScanLine } from './HeroMotion.jsx'
 
 // ─── useReveal hook ──────────────────────────────────────────────────────────
 function useReveal(options = {}) {
@@ -57,15 +58,21 @@ function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col justify-center items-center text-center overflow-hidden pt-16"
              style={{ backgroundColor: '#0A0A0A' }}>
+      {/* Motion graphics layers */}
+      <ParticleCanvas />
+      <ScanLine />
+
       {/* Ghost number */}
-      <div className="ghost-number absolute select-none pointer-events-none"
+      <div className="ghost-number hero-glitch absolute select-none pointer-events-none"
            style={{ fontSize: 'clamp(200px, 40vw, 500px)', fontFamily: '"Black Han Sans", Impact, sans-serif',
                     color: 'rgba(180,10,10,0.06)', lineHeight: 1, top: '50%', left: '50%',
-                    transform: 'translate(-50%, -50%)', zIndex: 0 }}>
+                    transform: 'translate(-50%, -50%)', zIndex: 1 }}>
         26
+        <div className="hero-glitch-slice" style={{ fontSize: 'clamp(200px, 40vw, 500px)', lineHeight: 1,
+                         top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }}>26</div>
       </div>
 
-      <div className="relative z-10 flex flex-col items-center gap-6 px-4 w-full max-w-5xl">
+      <div className="relative flex flex-col items-center gap-6 px-4 w-full max-w-5xl" style={{ zIndex: 10 }}>
         <div className="hero-badge border border-[#D81E1E] px-4 py-1 text-[#D81E1E] uppercase tracking-widest text-xs font-bold"
              style={{ animationFillMode: 'both' }}>
           Trap Street Radio Presents
