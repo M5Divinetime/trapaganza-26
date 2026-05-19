@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
+import MusicPlayer from './MusicPlayer.jsx'
 
 // ─── useReveal hook ──────────────────────────────────────────────────────────
 function useReveal(options = {}) {
@@ -359,7 +360,7 @@ export default function App() {
   return (
     <>
       <Navbar />
-      <main>
+      <main className="pb-20">
         <Hero />
         <Countdown />
         <Lineup />
@@ -367,6 +368,11 @@ export default function App() {
         <Sponsorships />
       </main>
       <Footer />
+      <MusicPlayer
+        src=""
+        trackName="Event Mix — Coming Soon"
+        artist="TRAPAGANZA"
+      />
     </>
   )
 }
