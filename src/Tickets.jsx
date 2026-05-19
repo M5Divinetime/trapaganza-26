@@ -207,6 +207,7 @@ function StepSelect({ quantities, setQuantities, onNext }) {
                      clipPath: 'polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)' }}>
             Proceed to Checkout →
           </button>
+          <p className="text-[#555] text-xs text-center mt-3 uppercase tracking-widest">All sales are final.</p>
         </div>
       </div>
     </div>
@@ -393,8 +394,11 @@ function StepPayment({ quantities, details, onBack }) {
           </span>
         </div>
 
-        <p className="text-[#888] text-sm mb-8 leading-relaxed">
+        <p className="text-[#888] text-sm mb-4 leading-relaxed">
           You'll be taken to Stripe's secure checkout to complete your payment. Accepts credit/debit card, Apple Pay, and Google Pay.
+        </p>
+        <p className="text-[#D81E1E] text-xs uppercase tracking-widest font-bold mb-8 border border-[#D81E1E] px-4 py-2 inline-block">
+          ⚠ All sales are final — No refunds or exchanges.
         </p>
 
         <div className="flex gap-4">

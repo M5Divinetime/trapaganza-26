@@ -263,6 +263,7 @@ function Tickets() {
                target="_blank" rel="noopener noreferrer" className="btn-angled btn-red text-base">
               Buy Now
             </a>
+            <p className="text-[#555] text-xs mt-3 uppercase tracking-widest">All sales are final. No refunds.</p>
           </div>
         </div>
       </div>
@@ -355,6 +356,9 @@ function Footer() {
       <p className="text-[#666] uppercase tracking-widest text-sm mb-6"
          style={{ fontFamily: 'Barlow Condensed, sans-serif' }}>06.13.26 · 8:30 PM · VRChat</p>
       <div className="w-24 h-[2px] mx-auto mb-6" style={{ backgroundColor: '#D81E1E' }} />
+      <p className="text-[#555] text-xs uppercase tracking-widest mb-3" style={{ fontFamily: 'Barlow Condensed, sans-serif' }}>
+        All sales are final — No refunds or exchanges.
+      </p>
       <p className="text-[#444] text-sm" style={{ fontFamily: 'Barlow Condensed, sans-serif' }}>
         © 2026 Trap Street Radio. All rights reserved.
       </p>
