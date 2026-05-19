@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { supabase } from './supabase.js'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -316,10 +316,12 @@ function StepDetails({ quantities, details, setDetails, onNext, onBack }) {
 }
 
 // ─── Step 3: Payment ──────────────────────────────────────────────────────────
+const BASE_URL = window.location.origin
+
 const STRIPE_LINKS = {
-  ga:       'https://buy.stripe.com/cNi3cv4sZ6hc5lIfim43S02',
-  gold:     'https://buy.stripe.com/14AcN5gbH494g0m0ns43S03',
-  platinum: 'https://buy.stripe.com/3cI6oH0cJcFAbK6c6a43S04',
+  ga:       `https://buy.stripe.com/cNi3cv4sZ6hc5lIfim43S02?success_url=${BASE_URL}/tickets?payment=success&cancel_url=${BASE_URL}/tickets?payment=cancelled`,
+  gold:     `https://buy.stripe.com/14AcN5gbH494g0m0ns43S03?success_url=${BASE_URL}/tickets?payment=success&cancel_url=${BASE_URL}/tickets?payment=cancelled`,
+  platinum: `https://buy.stripe.com/3cI6oH0cJcFAbK6c6a43S04?success_url=${BASE_URL}/tickets?payment=success&cancel_url=${BASE_URL}/tickets?payment=cancelled`,
 }
 
 function StepPayment({ quantities, details, onBack }) {
@@ -507,9 +509,30 @@ function StepConfirmation({ quantities, details }) {
 
 // ─── Main Tickets page ────────────────────────────────────────────────────────
 export default function Tickets() {
-  const [step, setStep]           = useState(0)
+  const [step, setStep]             = useState(0)
   const [quantities, setQuantities] = useState({ ga: 0, gold: 0, platinum: 0 })
-  const [details, setDetails]     = useState({})
+  const [details, setDetails]       = useState({})
+  const [searchParams]              = useSearchParams()
+
+  // Detect Stripe return — ?payment=success or ?payment=cancelled
+  useEffect(() => {
+    const payment = searchParams.get('payment')
+    if (payment === 'success') {
+      // Mark the most recent pending order as confirmed
+      supabase
+        .from('orders')
+        .update({ status: 'confirmed' })
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .then(() => {})
+      setStep(3) // jump to confirmation
+      window.scrollTo(0, 0)
+    }
+    if (payment === 'cancelled') {
+      setStep(0) // back to select
+    }
+  }, [])
 
   const next = () => { setStep(s => s + 1); window.scrollTo(0, 0) }
   const back = () => { setStep(s => s - 1); window.scrollTo(0, 0) }
