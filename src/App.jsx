@@ -190,8 +190,7 @@ function Lineup() {
         <div ref={gridRef} className="reveal reveal-stagger grid grid-cols-2 gap-[2px]">
           <ArtistCard name="DJFADEGAME"    role="DJ · Headliner" isHeadliner className="col-span-2" />
           <ArtistCard name="TALKNICETOKIA" role="Artist" />
-          <ArtistCard name="SKI DA G"      role="Artist" />
-          <ArtistCard name="WORDTHATSJAY"    role="Artist" />
+          <ArtistCard name="WORDTHATSJAY"   role="Artist" />
           <ArtistCard name="MEME SHONTE"    role="Artist" />
           <ArtistCard name="LAYDI GENEVIEVE" role="Artist" className="col-span-2" />
         </div>
