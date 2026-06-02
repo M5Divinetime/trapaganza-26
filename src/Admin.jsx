@@ -6,12 +6,16 @@ const TYPE_LABELS = { ga: 'General Admission', gold: 'Gold Sponsor', platinum: '
 const TYPE_COLORS = { ga: '#D81E1E', gold: '#C0A050', platinum: '#D81E1E' }
 const fmt = (n) => `$${Number(n).toFixed(2)}`
 
+const SETTINGS_KEY = 'trapaganza_settings'
+
 export default function Admin() {
   const [orders, setOrders]       = useState([])
   const [loading, setLoading]     = useState(true)
   const [filter, setFilter]       = useState('all')
   const [compModal, setCompModal] = useState(false)
   const [comp, setComp]           = useState({ name: '', email: '', vrchat: '', type: 'ga', note: '' })
+  const [worldLink, setWorldLink] = useState('')
+  const [worldLinkSaved, setWorldLinkSaved] = useState(false)
 
   // ── Fetch orders ────────────────────────────────────────────────
   const fetchOrders = async () => {
@@ -25,6 +29,24 @@ export default function Admin() {
   }
 
   useEffect(() => { fetchOrders() }, [])
+
+  // ── Load / save world link ───────────────────────────────────────
+  useEffect(() => {
+    supabase
+      .from('settings')
+      .select('value')
+      .eq('key', 'vrchat_world_link')
+      .maybeSingle()
+      .then(({ data }) => { if (data?.value) setWorldLink(data.value) })
+  }, [])
+
+  const saveWorldLink = async () => {
+    await supabase
+      .from('settings')
+      .upsert({ key: 'vrchat_world_link', value: worldLink }, { onConflict: 'key' })
+    setWorldLinkSaved(true)
+    setTimeout(() => setWorldLinkSaved(false), 3000)
+  }
 
   // ── Refund ──────────────────────────────────────────────────────
   const handleRefund = async (id) => {
@@ -124,6 +146,52 @@ export default function Admin() {
               </p>
             </div>
           ))}
+        </div>
+
+        {/* VRChat World Link */}
+        <div className="border border-[#2a2a2a] p-6 mb-8" style={{ backgroundColor: '#181818', borderTopColor: '#D81E1E', borderTopWidth: '3px' }}>
+          <div className="flex items-center gap-3 mb-1">
+            <h3 className="text-[#F5F0ED] text-sm uppercase tracking-widest font-bold"
+                style={{ fontFamily: 'Barlow Condensed, sans-serif' }}>
+              VRChat World Link
+            </h3>
+            <span className="text-xs uppercase tracking-widest px-2 py-0.5 font-bold"
+                  style={{ color: '#D81E1E', border: '1px solid #D81E1E' }}>
+              Event Access
+            </span>
+          </div>
+          <p className="text-[#555] text-xs mb-4 uppercase tracking-widest">
+            Paste the VRChat world link here. It will auto-populate into all GA ticket confirmation emails.
+          </p>
+          <div className="flex gap-3 flex-wrap">
+            <input
+              type="text"
+              value={worldLink}
+              onChange={e => setWorldLink(e.target.value)}
+              placeholder="https://vrchat.com/home/world/wrld_..."
+              className="flex-1 min-w-[260px] bg-[#111] border px-4 py-3 text-[#F5F0ED] text-sm outline-none"
+              style={{ borderColor: worldLink ? '#D81E1E' : '#2a2a2a', fontFamily: 'Barlow Condensed, sans-serif' }}
+              onFocus={e => e.target.style.borderColor = '#D81E1E'}
+              onBlur={e  => e.target.style.borderColor = worldLink ? '#D81E1E' : '#2a2a2a'}
+            />
+            <button
+              onClick={saveWorldLink}
+              className="btn-angled btn-red text-sm px-6 py-3 font-bold uppercase tracking-widest"
+              style={{ clipPath: 'polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)', flexShrink: 0 }}
+            >
+              {worldLinkSaved ? '✓ Saved' : 'Save Link'}
+            </button>
+          </div>
+          {worldLink && (
+            <p className="text-xs mt-3 uppercase tracking-widest" style={{ color: '#4ade80' }}>
+              ✓ World link is set — confirmation emails will include this link
+            </p>
+          )}
+          {!worldLink && (
+            <p className="text-xs mt-3 uppercase tracking-widest" style={{ color: '#C0A050' }}>
+              ⚠ No world link set yet — buyers will see a placeholder message
+            </p>
+          )}
         </div>
 
         {/* Toolbar */}

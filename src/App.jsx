@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import MusicPlayer from './MusicPlayer.jsx'
 import { ParticleCanvas, ScanLine } from './HeroMotion.jsx'
-import VoteSection from './VoteSection.jsx'
+import VoteSection, { ARTISTS } from './VoteSection.jsx'
 
 // ─── useReveal hook ──────────────────────────────────────────────────────────
 function useReveal(options = {}) {
@@ -21,36 +21,140 @@ function useReveal(options = {}) {
 }
 
 // ─── Navbar ──────────────────────────────────────────────────────────────────
+const NAV_LINKS = [
+  { id: 'lineup',   label: 'Lineup' },
+  { id: 'vote',     label: 'Vote' },
+  { id: 'tickets',  label: 'Tickets' },
+  { id: 'sponsors', label: 'Sponsors' },
+]
+
 function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
+  const [scrolled,   setScrolled]   = useState(false)
+  const [menuOpen,   setMenuOpen]   = useState(false)
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Close drawer on ESC
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
+  // Prevent body scroll when drawer is open
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [menuOpen])
+
+  const closeAndScroll = (id) => {
+    setMenuOpen(false)
+    setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    }, 50)
+  }
+
   return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50 border-b-2 border-[#D81E1E] transition-all duration-300"
-      style={{ backgroundColor: scrolled ? 'rgba(10,10,10,0.97)' : '#0A0A0A',
-               backdropFilter: scrolled ? 'blur(8px)' : 'none' }}
-    >
-      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-        <div className="flex flex-col leading-tight">
-          <span className="text-[#D81E1E] uppercase tracking-widest text-xs font-bold">Trap Street Radio</span>
-          <span className="text-[#F5F0ED] uppercase tracking-wider text-sm font-bold">TRAPAGANZA</span>
+    <>
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 border-b-2 border-[#D81E1E] transition-all duration-300"
+        style={{ backgroundColor: scrolled ? 'rgba(10,10,10,0.97)' : '#0A0A0A',
+                 backdropFilter: scrolled ? 'blur(8px)' : 'none' }}
+      >
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
+          <div className="flex flex-col leading-tight">
+            <span className="text-[#D81E1E] uppercase tracking-widest text-xs font-bold">Trap Street Radio</span>
+            <span className="text-[#F5F0ED] uppercase tracking-wider text-sm font-bold">TRAPAGANZA</span>
+          </div>
+
+          {/* Desktop links */}
+          <div className="hidden md:flex items-center gap-8 text-[#F5F0ED] uppercase tracking-widest text-sm font-semibold">
+            {NAV_LINKS.map(({ id, label }) => (
+              <a key={id} href={`#${id}`}
+                 className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#D81E1E] after:transition-all after:duration-300 hover:after:w-full hover:text-[#D81E1E] transition-colors">
+                {label}
+              </a>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Link to="/tickets" className="btn-angled btn-red text-sm">Get Tickets — $10</Link>
+            {/* Hamburger — mobile only */}
+            <button
+              className="md:hidden flex flex-col justify-center items-center gap-[5px] w-10 h-10"
+              onClick={() => setMenuOpen(o => !o)}
+              aria-label="Toggle menu"
+            >
+              <span className="block w-6 h-[2px] transition-all duration-300"
+                    style={{ backgroundColor: '#F5F0ED', transform: menuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none' }} />
+              <span className="block w-6 h-[2px] transition-all duration-300"
+                    style={{ backgroundColor: '#F5F0ED', opacity: menuOpen ? 0 : 1 }} />
+              <span className="block w-6 h-[2px] transition-all duration-300"
+                    style={{ backgroundColor: '#F5F0ED', transform: menuOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none' }} />
+            </button>
+          </div>
         </div>
-        <div className="hidden md:flex items-center gap-8 text-[#F5F0ED] uppercase tracking-widest text-sm font-semibold">
-          {['lineup','vote','tickets','sponsors'].map(id => (
-            <a key={id} href={`#${id}`}
-               className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#D81E1E] after:transition-all after:duration-300 hover:after:w-full hover:text-[#D81E1E] transition-colors">
-              {id.charAt(0).toUpperCase() + id.slice(1)}
-            </a>
+      </nav>
+
+      {/* Mobile drawer overlay */}
+      {menuOpen && (
+        <div
+          className="fixed inset-0 z-40 md:hidden"
+          style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
+
+      {/* Mobile drawer */}
+      <div
+        className="fixed top-0 right-0 bottom-0 z-40 md:hidden flex flex-col"
+        style={{
+          width: '280px',
+          backgroundColor: '#0A0A0A',
+          borderLeft: '2px solid #D81E1E',
+          transform: menuOpen ? 'translateX(0)' : 'translateX(100%)',
+          transition: 'transform 0.3s ease',
+        }}
+      >
+        {/* Drawer header */}
+        <div className="flex items-center justify-between px-6 h-16 border-b border-[#1f1f1f]">
+          <div className="flex flex-col leading-tight">
+            <span className="text-[#D81E1E] uppercase tracking-widest text-xs font-bold">Trap Street Radio</span>
+            <span className="text-[#F5F0ED] uppercase tracking-wider text-sm font-bold">TRAPAGANZA</span>
+          </div>
+          <button onClick={() => setMenuOpen(false)} aria-label="Close menu"
+                  className="text-[#888] hover:text-[#D81E1E] transition-colors text-2xl leading-none">
+            ✕
+          </button>
+        </div>
+
+        {/* Drawer nav links */}
+        <nav className="flex flex-col px-6 py-8 gap-2 flex-1">
+          {NAV_LINKS.map(({ id, label }) => (
+            <button
+              key={id}
+              onClick={() => closeAndScroll(id)}
+              className="text-left w-full py-4 border-b border-[#1f1f1f] text-[#F5F0ED] uppercase tracking-widest text-base font-bold hover:text-[#D81E1E] transition-colors"
+              style={{ fontFamily: 'Barlow Condensed, sans-serif', letterSpacing: '0.25em' }}
+            >
+              {label}
+            </button>
           ))}
+        </nav>
+
+        {/* Drawer CTA */}
+        <div className="px-6 pb-10">
+          <Link to="/tickets" onClick={() => setMenuOpen(false)}
+                className="btn-angled btn-red w-full text-center text-sm py-3 block">
+            Get Tickets — $10
+          </Link>
         </div>
-        <Link to="/tickets" className="btn-angled btn-red text-sm">Get Tickets — $10</Link>
       </div>
-    </nav>
+    </>
   )
 }
 
@@ -189,22 +293,15 @@ function Lineup() {
         </div>
 
         <div ref={gridRef} className="reveal reveal-stagger grid grid-cols-2 gap-[2px]">
-          <ArtistCard name="DJFADEGAME"              role="DJ · Headliner"  isHeadliner className="col-span-2" />
-          <ArtistCard name="TALKNICETOKIA"            role="Artist" />
-          <ArtistCard name="LAYDI GENEVIEVE"          role="Artist" />
-          <ArtistCard name="MEME SHONTE"              role="Artist" />
-          <ArtistCard name="Habit$"                   role="Artist" />
-          <ArtistCard name="Ryan Movesmade Johnson"   role="Artist" />
-          <ArtistCard name="WORDTHATSJAY"             role="Artist" />
-          <ArtistCard name="PARDON"                   role="Artist" />
-          <ArtistCard name="Mike Lowry"               role="Artist" />
-          <ArtistCard name="Moe Moshef Moses"         role="Artist" />
-          <ArtistCard name="2CXD"                     role="Artist" />
-          <ArtistCard name="Your Favorite BroccoliTop" role="Artist" />
-          <ArtistCard name="Da'Valor"                 role="Artist" />
-          <ArtistCard name="Auntie Panda"             role="Artist" />
-          <ArtistCard name="Kia - R&B Artist"         role="Artist" />
-          <ArtistCard name="Polo_b_coolin VR"         role="Artist" />
+          {ARTISTS.map(({ name, role, isHeadliner }) => (
+            <ArtistCard
+              key={name}
+              name={name}
+              role={role}
+              isHeadliner={isHeadliner}
+              className={isHeadliner ? 'col-span-2' : ''}
+            />
+          ))}
         </div>
       </div>
     </section>

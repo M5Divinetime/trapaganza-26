@@ -1,20 +1,24 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { supabase } from './supabase.js'
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-const ARTISTS = [
-  "Habit$",
-  "Ryan Movesmade Johnson",
-  "WORDTHATSJAY",
-  "PARDON",
-  "Mike Lowry",
-  "Moe Moshef Moses",
-  "2CXD",
-  "Your Favorite BroccoliTop",
-  "Da'Valor",
-  "Auntie Panda",
-  "Kia - R&B Artist",
-  "Polo_b_coolin VR",
+// ─── Master artist roster (single source of truth for Lineup + Vote) ─────────
+export const ARTISTS = [
+  { name: "DJFADEGAME",                role: "DJ · Headliner", isHeadliner: true },
+  { name: "TALKNICETOKIA",             role: "Artist" },
+  { name: "LAYDI GENEVIEVE",           role: "Artist" },
+  { name: "MEME SHONTE",              role: "Artist" },
+  { name: "Habit$",                    role: "Artist" },
+  { name: "Ryan Movesmade Johnson",    role: "Artist" },
+  { name: "WORDTHATSJAY",              role: "Artist" },
+  { name: "PARDON",                    role: "Artist" },
+  { name: "Mike Lowry",                role: "Artist" },
+  { name: "Moe Moshef Moses",          role: "Artist" },
+  { name: "2CXD",                      role: "Artist" },
+  { name: "Your Favorite BroccoliTop", role: "Artist" },
+  { name: "Da'Valor",                  role: "Artist" },
+  { name: "Auntie Panda",              role: "Artist" },
+  { name: "Kia - R&B Artist",          role: "Artist" },
+  { name: "Polo_b_coolin VR",          role: "Artist" },
 ]
 
 function useReveal(options = {}) {
@@ -122,7 +126,7 @@ function Leaderboard({ voteCounts }) {
 
   // Sort descending
   const sorted = [...ARTISTS]
-    .map(name => ({ name, count: voteCounts[name] || 0 }))
+    .map(({ name }) => ({ name, count: voteCounts[name] || 0 }))
     .sort((a, b) => b.count - a.count)
 
   const maxVotes = Math.max(1, ...sorted.map(a => a.count))
@@ -268,17 +272,14 @@ export default function VoteSection() {
   }, [])
 
   // ── Handle vote click ──────────────────────────────────────────────────────
+  // Votes are only recorded server-side via the Stripe webhook
+  // (checkout.session.completed) — never from the client.
   const handleVote = useCallback((artistName) => {
     setSelectedArtist(artistName)
     setShowStripe(true)
-    // Scroll to the stripe button after a brief delay
     setTimeout(() => {
       stripeRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }, 150)
-
-    // Optimistically record the vote intent in Supabase
-    // (actual vote confirmed via Stripe webhook in production)
-    supabase.from('votes').insert({ artist_name: artistName }).then(() => {})
   }, [])
 
   return (
@@ -314,7 +315,7 @@ export default function VoteSection() {
         {/* Artist grid */}
         <div ref={gridRef}
              className="reveal reveal-stagger grid grid-cols-2 md:grid-cols-3 gap-[2px]">
-          {ARTISTS.map((name) => (
+          {ARTISTS.map(({ name }) => (
             <ArtistVoteCard
               key={name}
               name={name}

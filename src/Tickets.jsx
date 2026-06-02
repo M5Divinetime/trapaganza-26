@@ -440,11 +440,21 @@ function StepConfirmation({ quantities, details }) {
                      color: '#D81E1E', lineHeight: 1 }}>
           YOU'RE IN!
         </h2>
-        <p className="text-[#888] mt-2 text-sm">
+        <p className="text-[#888] mt-2 text-sm leading-relaxed">
           A confirmation email has been sent to{' '}
           <span className="text-[#F5F0ED] font-bold">{details.email}</span>.
-          Your VRChat world link will be included — check your inbox before the event.
         </p>
+        <div className="mt-4 px-5 py-4 text-sm leading-relaxed text-left inline-block"
+             style={{ backgroundColor: '#181818', border: '1px solid #2a2a2a', borderLeft: '3px solid #D81E1E', maxWidth: '420px' }}>
+          <p className="text-[#D81E1E] uppercase tracking-widest text-xs font-bold mb-1"
+             style={{ fontFamily: 'Barlow Condensed, sans-serif' }}>
+            VRChat World Link
+          </p>
+          <p className="text-[#ccc]">
+            Your VRChat world link will be emailed to you <strong style={{ color: '#F5F0ED' }}>1 hour before the event</strong> on June 13 at 7:30 PM ET. A second email with the link will also be sent at event start (8:30 PM ET).
+          </p>
+          <p className="text-[#555] text-xs mt-2 uppercase tracking-widest">Check your spam folder if you don&apos;t see it.</p>
+        </div>
       </div>
 
       {/* Order details */}
