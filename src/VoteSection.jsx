@@ -51,11 +51,10 @@ function StripeBuyButton({ visible }) {
       ref={containerRef}
       className="flex justify-center items-center"
       style={{
-        transition: 'all 0.4s ease',
+        transition: 'max-height 0.4s ease, opacity 0.4s ease',
         overflow: 'hidden',
-        maxHeight: visible ? '200px' : '0px',
+        maxHeight: visible ? '500px' : '0px',
         opacity: visible ? 1 : 0,
-        marginTop: visible ? '0' : '0',
       }}
     >
       <stripe-buy-button
