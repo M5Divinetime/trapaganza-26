@@ -189,17 +189,23 @@ function Lineup() {
         </div>
 
         <div ref={gridRef} className="reveal reveal-stagger grid grid-cols-2 gap-[2px]">
-          <ArtistCard name="DJFADEGAME"    role="DJ · Headliner" isHeadliner className="col-span-2" />
-          <ArtistCard name="TALKNICETOKIA" role="Artist" />
-          <ArtistCard name="WORDTHATSJAY"   role="Artist" />
-          <ArtistCard name="MEME SHONTE"    role="Artist" />
-          <ArtistCard name="LAYDI GENEVIEVE" role="Artist" className="col-span-2" />
+          <ArtistCard name="DJFADEGAME"              role="DJ · Headliner"  isHeadliner className="col-span-2" />
+          <ArtistCard name="TALKNICETOKIA"            role="Artist" />
+          <ArtistCard name="LAYDI GENEVIEVE"          role="Artist" />
+          <ArtistCard name="MEME SHONTE"              role="Artist" />
+          <ArtistCard name="Habit$"                   role="Artist" />
+          <ArtistCard name="Ryan Movesmade Johnson"   role="Artist" />
+          <ArtistCard name="WORDTHATSJAY"             role="Artist" />
+          <ArtistCard name="PARDON"                   role="Artist" />
+          <ArtistCard name="Mike Lowry"               role="Artist" />
+          <ArtistCard name="Moe Moshef Moses"         role="Artist" />
+          <ArtistCard name="2CXD"                     role="Artist" />
+          <ArtistCard name="Your Favorite BroccoliTop" role="Artist" />
+          <ArtistCard name="Da'Valor"                 role="Artist" />
+          <ArtistCard name="Auntie Panda"             role="Artist" />
+          <ArtistCard name="Kia - R&B Artist"         role="Artist" />
+          <ArtistCard name="Polo_b_coolin VR"         role="Artist" />
         </div>
-
-        <p className="text-center mt-4 uppercase tracking-widest text-sm font-bold"
-           style={{ color: '#D81E1E', fontFamily: 'Barlow Condensed, sans-serif', letterSpacing: '0.3em' }}>
-          & Many More
-        </p>
       </div>
     </section>
   )
