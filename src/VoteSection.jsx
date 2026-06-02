@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabase.js'
+
+const VOTE_PAYMENT_URL = 'https://buy.stripe.com/aFabJ19NjdJEg0meei43S06'
 
 // ─── Master artist roster (single source of truth for Lineup + Vote) ─────────
 export const ARTISTS = [
@@ -36,46 +38,14 @@ function useReveal(options = {}) {
   return ref
 }
 
-// ─── Stripe buy button wrapper ────────────────────────────────────────────────
-function StripeBuyButton({ visible }) {
-  const containerRef = useRef(null)
-
-  useEffect(() => {
-    // Load stripe buy button script once
-    if (!document.querySelector('script[src*="buy-button.js"]')) {
-      const script = document.createElement('script')
-      script.src = 'https://js.stripe.com/v3/buy-button.js'
-      script.async = true
-      document.head.appendChild(script)
-    }
-  }, [])
-
-  return (
-    <div
-      ref={containerRef}
-      className="flex justify-center items-center"
-      style={{
-        transition: 'max-height 0.4s ease, opacity 0.4s ease',
-        overflow: 'hidden',
-        maxHeight: visible ? '500px' : '0px',
-        opacity: visible ? 1 : 0,
-      }}
-    >
-      <stripe-buy-button
-        buy-button-id="buy_btn_1TdyiWEa6NZJxavHNymTwojx"
-        publishable-key="pk_live_51Oej4TEa6NZJxavHue5DVVeRkvHFgfLt50ythn9bXGvbuAzoR9JR2kcUVK6cTKmqlv3M9ovfWAZgO7bPLfvO8lZk00fNmLuzou"
-      />
-    </div>
-  )
-}
-
 // ─── Artist Vote Card ─────────────────────────────────────────────────────────
-function ArtistVoteCard({ name, onVote }) {
+function ArtistVoteCard({ name }) {
   const [hovered, setHovered] = useState(false)
+  const voteUrl = `${VOTE_PAYMENT_URL}?prefilled_custom_field[artist_name]=${encodeURIComponent(name)}`
 
   return (
     <div
-      className="vote-card relative flex flex-col justify-between p-5 cursor-pointer"
+      className="vote-card relative flex flex-col justify-between p-5"
       style={{
         backgroundColor: '#181818',
         borderLeft: `3px solid ${hovered ? '#D81E1E' : 'transparent'}`,
@@ -106,15 +76,17 @@ function ArtistVoteCard({ name, onVote }) {
         </h3>
       </div>
 
-      {/* Vote button */}
+      {/* Vote button — opens Stripe Payment Link with artist pre-filled */}
       <div className="mt-4">
-        <button
-          onClick={() => onVote(name)}
-          className="btn-angled btn-red text-xs"
+        <a
+          href={voteUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-angled btn-red text-xs inline-block"
           style={{ padding: '8px 20px' }}
         >
           Vote — $5
-        </button>
+        </a>
       </div>
     </div>
   )
@@ -228,13 +200,10 @@ function Leaderboard({ voteCounts }) {
 
 // ─── VoteSection (main export) ────────────────────────────────────────────────
 export default function VoteSection() {
-  const [selectedArtist, setSelectedArtist] = useState(null)
-  const [showStripe, setShowStripe]         = useState(false)
-  const [voteCounts, setVoteCounts]         = useState({})
-  const stripeRef = useRef(null)
+  const [voteCounts, setVoteCounts] = useState({})
 
-  const headRef  = useReveal()
-  const gridRef  = useReveal()
+  const headRef = useReveal()
+  const gridRef = useReveal()
 
   // ── Load initial vote counts ──────────────────────────────────────────────
   useEffect(() => {
@@ -271,17 +240,6 @@ export default function VoteSection() {
     return () => { supabase.removeChannel(channel) }
   }, [])
 
-  // ── Handle vote click ──────────────────────────────────────────────────────
-  // Votes are only recorded server-side via the Stripe webhook
-  // (checkout.session.completed) — never from the client.
-  const handleVote = useCallback((artistName) => {
-    setSelectedArtist(artistName)
-    setShowStripe(true)
-    setTimeout(() => {
-      stripeRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    }, 150)
-  }, [])
-
   return (
     <section id="vote" className="py-20 px-4 border-t-2 border-[#D81E1E]"
              style={{ backgroundColor: '#111111' }}>
@@ -302,7 +260,6 @@ export default function VoteSection() {
             <span style={{ color: '#D81E1E' }}>Favorite Artist</span>
           </h2>
 
-          {/* Description */}
           <p className="mt-6 max-w-2xl mx-auto text-base leading-relaxed"
              style={{ color: '#aaa', fontFamily: 'Barlow Condensed, sans-serif', fontSize: '17px' }}>
             The stage is set and the artists are ready. Now it&apos;s <strong style={{ color: '#F5F0ED' }}>YOUR</strong> turn.
@@ -312,56 +269,12 @@ export default function VoteSection() {
           </p>
         </div>
 
-        {/* Artist grid */}
+        {/* Artist grid — each card links directly to Stripe with artist pre-filled */}
         <div ref={gridRef}
              className="reveal reveal-stagger grid grid-cols-2 md:grid-cols-3 gap-[2px]">
           {ARTISTS.map(({ name }) => (
-            <ArtistVoteCard
-              key={name}
-              name={name}
-              onVote={handleVote}
-            />
+            <ArtistVoteCard key={name} name={name} />
           ))}
-        </div>
-
-        {/* Selected artist banner + Stripe embed */}
-        <div ref={stripeRef} className="mt-10">
-          {selectedArtist && (
-            <div
-              className="mb-6 text-center py-4 px-6"
-              style={{
-                backgroundColor: '#1a1a1a',
-                border: '1px solid #D81E1E',
-                borderLeft: '4px solid #D81E1E',
-              }}
-            >
-              <p className="text-[#888] uppercase tracking-widest text-xs mb-1"
-                 style={{ fontFamily: 'Barlow Condensed, sans-serif' }}>
-                Voting for
-              </p>
-              <p style={{
-                fontFamily: '"Black Han Sans", Impact, sans-serif',
-                fontSize: 'clamp(22px, 4vw, 36px)',
-                color: '#D81E1E',
-                lineHeight: 1,
-              }}>
-                {selectedArtist}
-              </p>
-              <p className="mt-2 text-xs uppercase tracking-widest"
-                 style={{ color: '#555', fontFamily: 'Barlow Condensed, sans-serif' }}>
-                Complete your $5 vote below
-              </p>
-            </div>
-          )}
-
-          <StripeBuyButton visible={showStripe} />
-
-          {!showStripe && (
-            <p className="text-center mt-4 text-xs uppercase tracking-widest"
-               style={{ color: '#555', fontFamily: 'Barlow Condensed, sans-serif' }}>
-              Select an artist above to cast your vote
-            </p>
-          )}
         </div>
 
         {/* Live Leaderboard */}
