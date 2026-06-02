@@ -217,3 +217,13 @@
   transform: translateY(-6px);
   box-shadow: 0 16px 48px rgba(0,0,0,0.5);
 }
+
+/* ── Vote card hover ───────────────────────────────────────────── */
+.vote-card {
+  transition: background-color 0.25s ease, border-left-color 0.25s ease,
+              transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.vote-card:hover {
+  background-color: #1f1f1f !important;
+}

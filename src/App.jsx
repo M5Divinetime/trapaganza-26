@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import MusicPlayer from './MusicPlayer.jsx'
 import { ParticleCanvas, ScanLine } from './HeroMotion.jsx'
+import VoteSection from './VoteSection.jsx'
 
 // ─── useReveal hook ──────────────────────────────────────────────────────────
 function useReveal(options = {}) {
@@ -40,7 +41,7 @@ function Navbar() {
           <span className="text-[#F5F0ED] uppercase tracking-wider text-sm font-bold">TRAPAGANZA</span>
         </div>
         <div className="hidden md:flex items-center gap-8 text-[#F5F0ED] uppercase tracking-widest text-sm font-semibold">
-          {['lineup','tickets','sponsors'].map(id => (
+          {['lineup','vote','tickets','sponsors'].map(id => (
             <a key={id} href={`#${id}`}
                className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#D81E1E] after:transition-all after:duration-300 hover:after:w-full hover:text-[#D81E1E] transition-colors">
               {id.charAt(0).toUpperCase() + id.slice(1)}
@@ -374,6 +375,7 @@ export default function App() {
         <Hero />
         <Countdown />
         <Lineup />
+        <VoteSection />
         <Tickets />
         <Sponsorships />
       </main>

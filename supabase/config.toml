@@ -1,5 +1,5 @@
 [project]
-id = "gjksmlmepvpadaqbaybe"
+project_id = "gjksmlmepvpadaqbaybe"
 
 [functions.send-confirmation]
 verify_jwt = false
