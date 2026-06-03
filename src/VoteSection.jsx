@@ -54,8 +54,8 @@ function ArtistVoteCard({ name }) {
   const voteUrl = `${VOTE_PAYMENT_URL}?${encodeURIComponent(prefillKey)}=${encodeURIComponent(name)}`
 
   const castVote = async () => {
-    // Record the vote right now so the live leaderboard updates in real time via Supabase realtime.
-    // (We are no longer requiring an external Stripe webhook to insert the vote.)
+    // Record the vote right now. The $5 payment happens in the opened tab (a separate Stripe Payment Link).
+    // We are not relying on a server Stripe webhook to write the vote.
     try {
       await supabase.from('votes').insert({ artist_name: name })
     } catch (err) {

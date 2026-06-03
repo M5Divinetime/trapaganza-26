@@ -317,7 +317,12 @@ function StepDetails({ quantities, details, setDetails, onNext, onBack }) {
 }
 
 // ─── Step 3: Payment ──────────────────────────────────────────────────────────
-const BASE_URL = window.location.origin
+// BASE_URL is used to build Stripe success/cancel URLs.
+// Prefer VITE_APP_URL (set this to a trusted https preview URL like your current orchids.cloud preview when using custom domains that may have pending SSL certs).
+// Falls back to the current page origin when running normally.
+const BASE_URL =
+  (typeof import.meta !== 'undefined' && import.meta.env?.VITE_APP_URL) ||
+  (typeof window !== 'undefined' ? window.location.origin : 'https://example.com')
 
 const STRIPE_LINKS = {
   ga:       `https://buy.stripe.com/cNi3cv4sZ6hc5lIfim43S02?success_url=${BASE_URL}/tickets?payment=success&cancel_url=${BASE_URL}/tickets?payment=cancelled`,
