@@ -46,12 +46,26 @@ function useReveal(options = {}) {
 // ─── Artist Vote Card ─────────────────────────────────────────────────────────
 function ArtistVoteCard({ name }) {
   const [hovered, setHovered] = useState(false)
+  const [hasVoted, setHasVoted] = useState(false)
 
-  // Build the prefilled custom field URL safely.
-  // Stripe Payment Links expect: prefilled_custom_field[YOUR_FIELD_KEY]=value
-  // We percent-encode the entire key so brackets become %5B %5D.
+  // Build the prefilled custom field URL (for the $5 Stripe Payment Link checkout).
+  // The key "artist_name" must match the custom text field you created on the Payment Link in Stripe.
   const prefillKey = 'prefilled_custom_field[artist_name]'
   const voteUrl = `${VOTE_PAYMENT_URL}?${encodeURIComponent(prefillKey)}=${encodeURIComponent(name)}`
+
+  const castVote = async () => {
+    // Record the vote right now so the live leaderboard updates in real time via Supabase realtime.
+    // (We are no longer requiring an external Stripe webhook to insert the vote.)
+    try {
+      await supabase.from('votes').insert({ artist_name: name })
+    } catch (err) {
+      // Non-blocking. The payment tab will still open.
+    }
+    setHasVoted(true)
+
+    // Open Stripe checkout (with artist pre-filled).
+    window.open(voteUrl, '_blank')
+  }
 
   return (
     <div
@@ -86,17 +100,16 @@ function ArtistVoteCard({ name }) {
         </h3>
       </div>
 
-      {/* Vote button — opens Stripe Payment Link with artist pre-filled */}
+      {/* Vote button */}
       <div className="mt-4">
-        <a
-          href={voteUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-angled btn-red text-xs inline-block"
-          style={{ padding: '8px 20px' }}
+        <button
+          onClick={castVote}
+          disabled={hasVoted}
+          className="btn-angled btn-red text-xs"
+          style={{ padding: '8px 20px', opacity: hasVoted ? 0.7 : 1, cursor: hasVoted ? 'default' : 'pointer' }}
         >
-          Vote — $5
-        </a>
+          {hasVoted ? 'Voted ✓ — tab opened' : 'Vote — $5'}
+        </button>
       </div>
     </div>
   )
@@ -279,7 +292,7 @@ export default function VoteSection() {
           </p>
         </div>
 
-        {/* Artist grid — each card links directly to Stripe with artist pre-filled */}
+        {/* Artist grid — clicking Vote records the vote (immediate) + opens Stripe checkout (with artist pre-filled) */}
         <div ref={gridRef}
              className="reveal reveal-stagger grid grid-cols-2 md:grid-cols-3 gap-[2px]">
           {ARTISTS.map(({ name }) => (
