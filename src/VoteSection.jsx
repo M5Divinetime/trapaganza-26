@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabase.js'
 
+// ⚠️  REPLACE THIS with your LIVE Stripe Payment Link (from Stripe Dashboard → Payment Links).
+// The link must be created in LIVE mode (not test), for $5, and have a Custom text field
+// with Key = "artist_name" so we can prefill the voted-for artist automatically.
+//
+// Example after copy: 'https://buy.stripe.com/cFabJ19NjdJEg0meei43S07'
 const VOTE_PAYMENT_URL = 'https://buy.stripe.com/aFabJ19NjdJEg0meei43S06'
 
 // ─── Master artist roster (single source of truth for Lineup + Vote) ─────────
@@ -41,7 +46,12 @@ function useReveal(options = {}) {
 // ─── Artist Vote Card ─────────────────────────────────────────────────────────
 function ArtistVoteCard({ name }) {
   const [hovered, setHovered] = useState(false)
-  const voteUrl = `${VOTE_PAYMENT_URL}?prefilled_custom_field[artist_name]=${encodeURIComponent(name)}`
+
+  // Build the prefilled custom field URL safely.
+  // Stripe Payment Links expect: prefilled_custom_field[YOUR_FIELD_KEY]=value
+  // We percent-encode the entire key so brackets become %5B %5D.
+  const prefillKey = 'prefilled_custom_field[artist_name]'
+  const voteUrl = `${VOTE_PAYMENT_URL}?${encodeURIComponent(prefillKey)}=${encodeURIComponent(name)}`
 
   return (
     <div
