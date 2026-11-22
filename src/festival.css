@@ -1,0 +1,421 @@
+.festival-site {
+  --festival-red: #d81e1e;
+  --festival-bright: #ff6262;
+  --festival-ink: #0c0a0b;
+  --festival-paper: #f5f0ed;
+  --festival-line: #392c30;
+  background: var(--festival-ink);
+  color: var(--festival-paper);
+  padding-bottom: 5.5rem;
+}
+
+.festival-site a:focus-visible,
+.festival-site button:focus-visible {
+  outline: 2px solid var(--festival-bright);
+  outline-offset: 4px;
+}
+
+.festival-site [id] {
+  scroll-margin-top: 5.5rem;
+}
+
+.festival-shell {
+  width: min(100% - 3rem, 76rem);
+  margin-inline: auto;
+}
+
+.festival-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: #0c0a0bf7;
+  border-bottom: 1px solid var(--festival-line);
+}
+
+.festival-nav {
+  min-height: 4.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.festival-mark {
+  display: inline-flex;
+  flex-direction: column;
+  color: var(--festival-paper);
+  font: 1.15rem/1.15 'Black Han Sans', Impact, sans-serif;
+}
+
+.festival-mark span,
+.festival-kicker {
+  color: var(--festival-bright);
+  font: 700 .875rem/1.2 'Barlow Condensed', sans-serif;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.festival-mark span {
+  margin-bottom: .25rem;
+}
+
+.festival-menu-toggle {
+  display: none;
+}
+
+.festival-nav-links {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.festival-nav-links a:hover {
+  color: var(--festival-bright);
+}
+
+.festival-hero {
+  overflow: hidden;
+  border-bottom: 1px solid var(--festival-line);
+  background: radial-gradient(ellipse at 85% 45%, #3a1218 0, #160c10 47%, var(--festival-ink) 77%);
+}
+
+.festival-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, .74fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  min-height: clamp(30rem, 72svh, 46rem);
+  padding-block: clamp(3rem, 7vw, 7rem);
+}
+
+.festival-hero h1,
+.festival-heading,
+.festival-headliner h3 {
+  line-height: .94;
+}
+
+.festival-hero h1 {
+  margin: 1rem 0 1.4rem;
+  font-size: clamp(2.55rem, 4.5vw, 5.4rem);
+  letter-spacing: -.065em;
+}
+
+.festival-hero h1 span {
+  display: block;
+  color: var(--festival-bright);
+  font-size: 1.38em;
+}
+
+.festival-hero-date {
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  font-weight: 700;
+}
+
+.festival-hero-date span {
+  color: #cbbcc0;
+  font-size: .9em;
+  font-weight: 500;
+}
+
+.festival-actions {
+  display: flex;
+  gap: .6rem;
+  flex-wrap: wrap;
+  margin-top: 1.75rem;
+}
+
+.festival-hero-media {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 16 / 9;
+  background: #1c1417;
+  border: 1px solid #774048;
+  box-shadow: 0 1.25rem 3.5rem #0008;
+}
+
+.festival-hero-media video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.festival-motion-control {
+  position: absolute;
+  top: .65rem;
+  right: .65rem;
+  min-height: 2.75rem;
+  padding: .4rem .8rem;
+  border: 1px solid #f5f0ed55;
+  background: #0c0a0bf2;
+  font-weight: 600;
+}
+
+.festival-section {
+  padding-block: clamp(3rem, 7vw, 6rem);
+}
+
+.festival-heading {
+  margin: 0 0 1.75rem;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  letter-spacing: -.045em;
+}
+
+.festival-headliner {
+  display: grid;
+  align-content: end;
+  min-height: 15rem;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  border: 1px solid #87414b;
+  border-left: .375rem solid var(--festival-red);
+  background: linear-gradient(110deg, #291015 15%, #40171d 60%, #170d11);
+}
+
+.festival-headliner h3 {
+  margin-top: .5rem;
+  font-size: clamp(2rem, 7vw, 6rem);
+  letter-spacing: -.04em;
+  overflow-wrap: anywhere;
+}
+
+.festival-roster {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--festival-line);
+  border-top: 0;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  background: var(--festival-line);
+  list-style: none;
+}
+
+.festival-roster li {
+  display: flex;
+  align-items: center;
+  min-height: 4.5rem;
+  padding: .8rem clamp(.7rem, 2vw, 1.4rem);
+  background: #141013;
+  font-size: clamp(1.15rem, 2.2vw, 1.7rem);
+  font-weight: 700;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.festival-event {
+  background: #201015;
+  border-block: 1px solid var(--festival-line);
+}
+
+.festival-event-grid {
+  display: grid;
+  grid-template-columns: minmax(0, .65fr) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+}
+
+.festival-event h2 {
+  margin-bottom: 0;
+}
+
+.festival-event dl {
+  margin: 0;
+  border-top: 1px solid #704047;
+}
+
+.festival-event dl div {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: .75rem;
+  padding: .8rem 0;
+  border-bottom: 1px solid #704047;
+  align-items: baseline;
+}
+
+.festival-event dt {
+  color: #e2afb7;
+  font-size: 1rem;
+}
+
+.festival-event dd {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.festival-site :is(#tickets, #sponsors, #vote) {
+  padding-block: clamp(3rem, 7vw, 6rem);
+  border-top: 1px solid var(--festival-line);
+}
+
+.festival-site :is(#tickets, #sponsors, #vote) > div {
+  width: min(100% - 1rem, 76rem);
+  max-width: none;
+}
+
+.festival-footer {
+  padding-block: 2rem;
+  border-top: 1px solid var(--festival-line);
+}
+
+.festival-footer .festival-shell {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+}
+
+.festival-footer small {
+  color: #cbbcc0;
+  font-size: .9rem;
+}
+
+.festival-player-status {
+  position: fixed;
+  z-index: 35;
+  inset: auto 0 0;
+  padding-block: .7rem max(.7rem, env(safe-area-inset-bottom));
+  border-top: 1px solid #91434e;
+  background: #130f12fa;
+}
+
+.festival-player-status > div {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+}
+
+.festival-player-status p {
+  margin: 0;
+  color: #cfbdc3;
+  line-height: 1.25;
+}
+
+.festival-player-status strong {
+  display: block;
+  color: var(--festival-paper);
+  font-size: .95rem;
+}
+
+.festival-player-disc {
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  border: .55rem double #82414b;
+  border-radius: 50%;
+}
+
+@media (max-width: 55rem) {
+  .festival-menu-toggle {
+    display: block;
+    min-height: 2.75rem;
+    padding-inline: .8rem;
+    border: 1px solid var(--festival-line);
+    font-weight: 700;
+    margin-left: auto;
+  }
+
+  .festival-nav-links {
+    display: none;
+    position: absolute;
+    inset: 100% 0 auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: .5rem 1.5rem;
+    background: var(--festival-ink);
+    border-bottom: 1px solid var(--festival-line);
+  }
+
+  .festival-nav-links.is-open {
+    display: flex;
+  }
+
+  .festival-nav-links a {
+    padding-block: .65rem;
+  }
+
+  .festival-hero-grid,
+  .festival-event-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .festival-hero h1 {
+    font-size: clamp(2.8rem, 9vw, 5.4rem);
+  }
+
+  .festival-hero h1 span {
+    display: inline;
+    font-size: 1em;
+  }
+}
+
+@media (max-width: 35rem) {
+  .festival-shell {
+    width: calc(100% - 2rem);
+  }
+
+  .festival-nav {
+    gap: .7rem;
+  }
+
+  .festival-nav .festival-nav-cta {
+    padding-inline: .8rem;
+  }
+
+  .festival-hero h1 span {
+    display: block;
+  }
+
+  .festival-roster {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .festival-site .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .festival-site .sponsor-card,
+  .festival-site .vote-card,
+  .festival-site .btn-angled {
+    transition: none !important;
+  }
+}
+
+@media (max-width: 23rem) {
+  .festival-nav {
+    gap: .45rem;
+  }
+
+  .festival-nav .festival-mark {
+    font-size: .9rem;
+  }
+
+  .festival-nav .festival-mark span {
+    font-size: .68rem;
+    letter-spacing: .08em;
+  }
+
+  .festival-menu-toggle,
+  .festival-nav .festival-nav-cta {
+    padding-inline: .5rem;
+    font-size: .85rem;
+    white-space: nowrap;
+  }
+}

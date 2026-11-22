@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import MusicPlayer from './MusicPlayer.jsx'
-import { ParticleCanvas, ScanLine } from './HeroMotion.jsx'
 import VoteSection, { ARTISTS } from './VoteSection.jsx'
+import './festival.css'
 
 // ─── useReveal hook ──────────────────────────────────────────────────────────
 function useReveal(options = {}) {
@@ -20,308 +20,138 @@ function useReveal(options = {}) {
   return ref
 }
 
-// ─── Navbar ──────────────────────────────────────────────────────────────────
 const NAV_LINKS = [
-  { id: 'lineup',   label: 'Lineup' },
-  { id: 'vote',     label: 'Vote' },
-  { id: 'tickets',  label: 'Tickets' },
+  { id: 'lineup', label: 'Lineup' },
+  { id: 'event', label: 'Event Info' },
+  { id: 'vote', label: 'Vote' },
+  { id: 'tickets', label: 'Tickets' },
   { id: 'sponsors', label: 'Sponsors' },
 ]
 
 function Navbar() {
-  const [scrolled,   setScrolled]   = useState(false)
-  const [menuOpen,   setMenuOpen]   = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuButton = useRef(null)
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  // Close drawer on ESC
-  useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false) }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [])
-
-  // Prevent body scroll when drawer is open
-  useEffect(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
-  }, [menuOpen])
-
-  const closeAndScroll = (id) => {
-    setMenuOpen(false)
-    setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-    }, 50)
-  }
-
-  return (
-    <>
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 border-b-2 border-[#D81E1E] transition-all duration-300"
-        style={{ backgroundColor: scrolled ? 'rgba(10,10,10,0.97)' : '#0A0A0A',
-                 backdropFilter: scrolled ? 'blur(8px)' : 'none' }}
-      >
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-          <div className="flex flex-col leading-tight">
-            <span className="text-[#D81E1E] uppercase tracking-widest text-xs font-bold">Trap Street Radio</span>
-            <span className="text-[#F5F0ED] uppercase tracking-wider text-sm font-bold">TRAPAGANZA</span>
-          </div>
-
-          {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-8 text-[#F5F0ED] uppercase tracking-widest text-sm font-semibold">
-            {NAV_LINKS.map(({ id, label }) => (
-              <a key={id} href={`#${id}`}
-                 className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#D81E1E] after:transition-all after:duration-300 hover:after:w-full hover:text-[#D81E1E] transition-colors">
-                {label}
-              </a>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link to="/tickets" className="btn-angled btn-red text-sm">Get Tickets — $10</Link>
-            {/* Hamburger — mobile only */}
-            <button
-              className="md:hidden flex flex-col justify-center items-center gap-[5px] w-10 h-10"
-              onClick={() => setMenuOpen(o => !o)}
-              aria-label="Toggle menu"
-            >
-              <span className="block w-6 h-[2px] transition-all duration-300"
-                    style={{ backgroundColor: '#F5F0ED', transform: menuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none' }} />
-              <span className="block w-6 h-[2px] transition-all duration-300"
-                    style={{ backgroundColor: '#F5F0ED', opacity: menuOpen ? 0 : 1 }} />
-              <span className="block w-6 h-[2px] transition-all duration-300"
-                    style={{ backgroundColor: '#F5F0ED', transform: menuOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none' }} />
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Mobile drawer overlay */}
-      {menuOpen && (
-        <div
-          className="fixed inset-0 z-40 md:hidden"
-          style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}
-          onClick={() => setMenuOpen(false)}
-        />
-      )}
-
-      {/* Mobile drawer */}
-      <div
-        className="fixed top-0 right-0 bottom-0 z-40 md:hidden flex flex-col"
-        style={{
-          width: '280px',
-          backgroundColor: '#0A0A0A',
-          borderLeft: '2px solid #D81E1E',
-          transform: menuOpen ? 'translateX(0)' : 'translateX(100%)',
-          transition: 'transform 0.3s ease',
-        }}
-      >
-        {/* Drawer header */}
-        <div className="flex items-center justify-between px-6 h-16 border-b border-[#1f1f1f]">
-          <div className="flex flex-col leading-tight">
-            <span className="text-[#D81E1E] uppercase tracking-widest text-xs font-bold">Trap Street Radio</span>
-            <span className="text-[#F5F0ED] uppercase tracking-wider text-sm font-bold">TRAPAGANZA</span>
-          </div>
-          <button onClick={() => setMenuOpen(false)} aria-label="Close menu"
-                  className="text-[#888] hover:text-[#D81E1E] transition-colors text-2xl leading-none">
-            ✕
-          </button>
-        </div>
-
-        {/* Drawer nav links */}
-        <nav className="flex flex-col px-6 py-8 gap-2 flex-1">
-          {NAV_LINKS.map(({ id, label }) => (
-            <button
-              key={id}
-              onClick={() => closeAndScroll(id)}
-              className="text-left w-full py-4 border-b border-[#1f1f1f] text-[#F5F0ED] uppercase tracking-widest text-base font-bold hover:text-[#D81E1E] transition-colors"
-              style={{ fontFamily: 'Barlow Condensed, sans-serif', letterSpacing: '0.25em' }}
-            >
-              {label}
-            </button>
-          ))}
-        </nav>
-
-        {/* Drawer CTA */}
-        <div className="px-6 pb-10">
-          <Link to="/tickets" onClick={() => setMenuOpen(false)}
-                className="btn-angled btn-red w-full text-center text-sm py-3 block">
-            Get Tickets — $10
-          </Link>
-        </div>
-      </div>
-    </>
-  )
-}
-
-// ─── Hero ────────────────────────────────────────────────────────────────────
-function Hero() {
-  return (
-    <section className="relative min-h-screen flex flex-col justify-center items-center text-center overflow-hidden pt-16"
-             style={{ backgroundColor: '#0A0A0A' }}>
-      {/* Motion graphics layers */}
-      <ParticleCanvas />
-      <ScanLine />
-
-      {/* Ghost number */}
-      <div className="ghost-number hero-glitch absolute select-none pointer-events-none"
-           style={{ fontSize: 'clamp(200px, 40vw, 500px)', fontFamily: '"Black Han Sans", Impact, sans-serif',
-                    color: 'rgba(180,10,10,0.06)', lineHeight: 1, top: '50%', left: '50%',
-                    transform: 'translate(-50%, -50%)', zIndex: 1 }}>
-        26
-        <div className="hero-glitch-slice" style={{ fontSize: 'clamp(200px, 40vw, 500px)', lineHeight: 1,
-                         top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }}>26</div>
-      </div>
-
-      <div className="relative flex flex-col items-center gap-6 px-4 w-full max-w-5xl" style={{ zIndex: 10 }}>
-        <div className="hero-badge border border-[#D81E1E] px-4 py-1 text-[#D81E1E] uppercase tracking-widest text-xs font-bold"
-             style={{ animationFillMode: 'both' }}>
-          Trap Street Radio Presents
-        </div>
-
-        <div className="hero-image w-full relative">
-          <video autoPlay muted loop playsInline
-                 className="w-full"
-                 style={{ display: 'block', borderLeft: '3px solid #D81E1E', borderRight: '3px solid #D81E1E',
-                          boxShadow: '0 0 80px rgba(216,30,30,0.35), 0 0 20px rgba(216,30,30,0.2)' }}>
-            <source src="/trapaganza-hero.mp4" type="video/mp4" />
-          </video>
-        </div>
-
-        <div className="hero-date text-[#F5F0ED] tracking-widest text-2xl md:text-3xl"
-             style={{ fontFamily: '"Courier New", Courier, monospace' }}>
-          06.13.26
-        </div>
-
-        <div className="hero-details flex flex-wrap justify-center gap-4 text-[#888] uppercase tracking-widest text-sm font-semibold">
-          <span>8:30 PM</span>
-          <span className="text-[#D81E1E]">·</span>
-          <span>VRChat</span>
-          <span className="text-[#D81E1E]">·</span>
-          <span>Live Event</span>
-          <span className="text-[#D81E1E]">·</span>
-          <span>Hosted by <span className="text-[#F5F0ED]">Goddesz609vr</span></span>
-        </div>
-
-        <div className="hero-ctas flex flex-wrap gap-4 justify-center mt-2">
-          <Link to="/tickets" className="btn-angled btn-red text-base">Get Tickets — $10</Link>
-          <a href="#sponsors" className="btn-angled btn-outline-white text-base">Become a Sponsor</a>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-// ─── Countdown ───────────────────────────────────────────────────────────────
-function Countdown() {
-  const TARGET = new Date('2026-06-13T20:30:00').getTime()
-  const calc = () => {
-    const diff = Math.max(0, TARGET - Date.now())
-    return {
-      days:  Math.floor(diff / 86400000),
-      hours: Math.floor((diff % 86400000) / 3600000),
-      mins:  Math.floor((diff % 3600000) / 60000),
-      secs:  Math.floor((diff % 60000) / 1000),
+  function handleEscape(event) {
+    if (event.key === 'Escape' && menuOpen) {
+      setMenuOpen(false)
+      menuButton.current?.focus()
     }
   }
-  const [time, setTime] = useState(calc)
-  const [prevTime, setPrevTime] = useState(calc)
+
+  return (
+    <header className="festival-header" onKeyDown={handleEscape}>
+      <div className="festival-shell festival-nav">
+        <Link to="/" className="festival-mark" onClick={() => setMenuOpen(false)}>
+          <span>Trap Street Radio</span>
+          TRAPAGANZA
+        </Link>
+        <button ref={menuButton} type="button" className="festival-menu-toggle"
+                aria-controls="festival-navigation" aria-expanded={menuOpen}
+                onClick={() => setMenuOpen(open => !open)}>
+          {menuOpen ? 'Close' : 'Menu'}
+        </button>
+        <nav id="festival-navigation" aria-label="Main navigation"
+             className={`festival-nav-links ${menuOpen ? 'is-open' : ''}`}>
+          {NAV_LINKS.map(({ id, label }) => (
+            <a key={id} href={`#${id}`} onClick={() => setMenuOpen(false)}>{label}</a>
+          ))}
+        </nav>
+        <Link to="/tickets" className="btn-angled btn-red festival-nav-cta">Get Tickets</Link>
+      </div>
+    </header>
+  )
+}
+
+function Hero() {
+  const video = useRef(null)
+  const [playing, setPlaying] = useState(false)
+  const [motionUnavailable, setMotionUnavailable] = useState(false)
+
   useEffect(() => {
-    const id = setInterval(() => { setPrevTime(time); setTime(calc()) }, 1000)
-    return () => clearInterval(id)
-  }, [time])
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const preview = video.current
+    const syncMotion = () => {
+      if (preference.matches) preview.pause()
+      else preview.play().catch(() => {})
+    }
 
-  const pad = (n) => String(n).padStart(2, '0')
-  const ref = useReveal()
+    syncMotion()
+    preference.addEventListener('change', syncMotion)
+    return () => preference.removeEventListener('change', syncMotion)
+  }, [])
+
+  function toggleMotion() {
+    if (playing) video.current.pause()
+    else video.current.play().catch(() => setMotionUnavailable(true))
+  }
 
   return (
-    <section className="w-full py-8" style={{ backgroundColor: '#D81E1E' }}>
-      <div ref={ref} className="reveal max-w-4xl mx-auto px-4 text-center">
-        <div className="text-white uppercase tracking-widest text-sm font-bold mb-4"
-             style={{ fontFamily: 'Barlow Condensed, sans-serif', letterSpacing: '0.3em' }}>
-          Drops In
+    <section className="festival-hero" aria-labelledby="festival-title">
+      <div className="festival-shell festival-hero-grid">
+        <div className="festival-hero-copy">
+          <p className="festival-kicker">Trap Street Radio presents</p>
+          <h1 id="festival-title">TRAPAGANZA <span>26</span></h1>
+          <p className="festival-hero-date">
+            <time dateTime="2026-06-13T20:30:00-04:00">June 13, 2026 · 8:30 PM ET</time>
+            <span>Live in VRChat</span>
+          </p>
+          <div className="festival-actions">
+            <a href="#lineup" className="btn-angled btn-red">Explore the Lineup</a>
+            <a href="#event" className="btn-angled btn-outline-white">Event Info</a>
+          </div>
         </div>
-        <div className="flex justify-center items-center gap-4 md:gap-8"
-             style={{ fontFamily: '"Courier New", Courier, monospace' }}>
-          {[
-            { val: pad(time.days),  label: 'Days',  changed: time.days  !== prevTime.days  },
-            { val: pad(time.hours), label: 'Hours', changed: time.hours !== prevTime.hours },
-            { val: pad(time.mins),  label: 'Mins',  changed: time.mins  !== prevTime.mins  },
-            { val: pad(time.secs),  label: 'Secs',  changed: true },
-          ].map(({ val, label, changed }, i, arr) => (
-            <React.Fragment key={label}>
-              <div className="flex flex-col items-center">
-                <span key={`${label}-${val}`}
-                      className="text-white font-bold count-num"
-                      style={{ fontSize: 'clamp(40px, 9vw, 90px)', lineHeight: 1 }}>
-                  {val}
-                </span>
-                <span className="text-white/70 uppercase tracking-widest text-xs mt-1"
-                      style={{ fontFamily: 'Barlow Condensed, sans-serif' }}>
-                  {label}
-                </span>
-              </div>
-              {i < arr.length - 1 && (
-                <span className="text-white/50 font-bold"
-                      style={{ fontSize: 'clamp(30px, 6vw, 70px)', lineHeight: 1, marginTop: '-12px' }}>:</span>
-              )}
-            </React.Fragment>
-          ))}
+
+        <div className="festival-hero-media">
+          <video ref={video} muted loop playsInline preload="metadata" aria-hidden="true"
+                 poster="/trapaganza-hero-poster.webp" src="/trapaganza-hero.mp4"
+                 onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)}
+                 onError={() => setMotionUnavailable(true)} />
+          {!motionUnavailable && (
+            <button type="button" className="festival-motion-control" onClick={toggleMotion}>
+              {playing ? 'Pause animation' : 'Play animation'}
+            </button>
+          )}
         </div>
       </div>
     </section>
   )
 }
 
-// ─── Lineup ──────────────────────────────────────────────────────────────────
 function Lineup() {
-  const eyebrowRef = useReveal()
-  const gridRef    = useReveal()
+  const headliner = ARTISTS.find(artist => artist.isHeadliner)
+  const performers = ARTISTS.filter(artist => !artist.isHeadliner)
 
   return (
-    <section id="lineup" className="py-20 px-4" style={{ backgroundColor: '#0A0A0A' }}>
-      <div className="max-w-4xl mx-auto">
-        <div ref={eyebrowRef} className="reveal text-center mb-12">
-          <p className="text-[#D81E1E] uppercase tracking-widest text-sm font-bold mb-2">Live on VRChat</p>
-          <h2 style={{ fontFamily: '"Black Han Sans", Impact, sans-serif', fontSize: 'clamp(40px, 8vw, 80px)', color: '#F5F0ED' }}>
-            The Lineup
-          </h2>
-        </div>
-
-        <div ref={gridRef} className="reveal reveal-stagger grid grid-cols-2 gap-[2px]">
-          {ARTISTS.map(({ name, role, isHeadliner }) => (
-            <ArtistCard
-              key={name}
-              name={name}
-              role={role}
-              isHeadliner={isHeadliner}
-              className={isHeadliner ? 'col-span-2' : ''}
-            />
-          ))}
-        </div>
+    <section id="lineup" className="festival-section" aria-labelledby="lineup-title">
+      <div className="festival-shell">
+        <h2 id="lineup-title" className="festival-heading">The Lineup</h2>
+        {headliner && (
+          <article className="festival-headliner">
+            <p className="festival-kicker">{headliner.role}</p>
+            <h3>{headliner.name}</h3>
+          </article>
+        )}
+        <ul className="festival-roster" aria-label="Performers">
+          {performers.map(({ name }) => <li key={name}>{name}</li>)}
+        </ul>
       </div>
     </section>
   )
 }
 
-function ArtistCard({ name, role, isHeadliner = false, className = '' }) {
+function EventInfo() {
   return (
-    <div className={`artist-card relative overflow-hidden flex flex-col justify-end p-6 md:p-8 cursor-default ${className}`}
-         style={{ backgroundColor: '#181818', minHeight: isHeadliner ? '200px' : '160px', borderLeft: '3px solid transparent' }}
-         onMouseEnter={e => { e.currentTarget.style.borderLeftColor = '#D81E1E' }}
-         onMouseLeave={e => { e.currentTarget.style.borderLeftColor = 'transparent' }}>
-      <p className="uppercase tracking-widest text-[#888] text-xs mb-1"
-         style={{ fontFamily: 'Barlow Condensed, sans-serif', letterSpacing: '0.25em' }}>{role}</p>
-      <h3 style={{ fontFamily: '"Black Han Sans", Impact, sans-serif',
-                   fontSize: isHeadliner ? 'clamp(28px, 5vw, 56px)' : 'clamp(20px, 3.5vw, 36px)',
-                   color: isHeadliner ? '#D81E1E' : '#F5F0ED', lineHeight: 1 }}>
-        {name}
-      </h3>
-    </div>
+    <section id="event" className="festival-event festival-section" aria-labelledby="event-title">
+      <div className="festival-shell festival-event-grid">
+        <h2 id="event-title" className="festival-heading">Event Info</h2>
+        <dl>
+          <div><dt>Date &amp; time</dt><dd>June 13, 2026 · 8:30 PM ET</dd></div>
+          <div><dt>Platform</dt><dd>VRChat</dd></div>
+          <div><dt>Host</dt><dd>Goddesz609vr</dd></div>
+        </dl>
+      </div>
+    </section>
   )
 }
 
@@ -444,50 +274,31 @@ function Sponsorships() {
   )
 }
 
-// ─── Footer ──────────────────────────────────────────────────────────────────
 function Footer() {
-  const ref = useReveal()
   return (
-    <footer ref={ref} className="reveal border-t-2 border-[#D81E1E] py-12 px-4 text-center"
-            style={{ backgroundColor: '#0A0A0A' }}>
-      <p className="uppercase tracking-widest text-xs font-bold mb-2"
-         style={{ color: '#D81E1E', fontFamily: 'Barlow Condensed, sans-serif' }}>Trap Street Radio</p>
-      <h2 className="text-[#F5F0ED] mb-2"
-          style={{ fontFamily: '"Black Han Sans", Impact, sans-serif', fontSize: 'clamp(36px, 8vw, 72px)' }}>
-        TRAPAGANZA
-      </h2>
-      <p className="text-[#666] uppercase tracking-widest text-sm mb-6"
-         style={{ fontFamily: 'Barlow Condensed, sans-serif' }}>06.13.26 · 8:30 PM · VRChat</p>
-      <div className="w-24 h-[2px] mx-auto mb-6" style={{ backgroundColor: '#D81E1E' }} />
-      <p className="text-[#555] text-xs uppercase tracking-widest mb-3" style={{ fontFamily: 'Barlow Condensed, sans-serif' }}>
-        All sales are final — No refunds or exchanges.
-      </p>
-      <p className="text-[#444] text-sm" style={{ fontFamily: 'Barlow Condensed, sans-serif' }}>
-        © 2026 Trap Street Radio. All rights reserved.
-      </p>
+    <footer className="festival-footer">
+      <div className="festival-shell">
+        <span className="festival-mark"><span>Presented by</span>Trap Street Radio</span>
+        <small>© 2026 Trap Street Radio. All rights reserved.</small>
+      </div>
     </footer>
   )
 }
 
-// ─── App ─────────────────────────────────────────────────────────────────────
 export default function App() {
   return (
-    <>
+    <div className="festival-site">
       <Navbar />
-      <main className="pb-20">
+      <main>
         <Hero />
-        <Countdown />
         <Lineup />
-        <VoteSection />
+        <EventInfo />
         <Tickets />
         <Sponsorships />
+        <VoteSection />
       </main>
       <Footer />
-      <MusicPlayer
-        src=""
-        trackName="Event Mix — Coming Soon"
-        artist="TRAPAGANZA"
-      />
-    </>
+      <MusicPlayer trackName="Event mix coming soon" artist="Trap Street Radio" />
+    </div>
   )
 }

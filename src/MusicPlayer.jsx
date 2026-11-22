@@ -133,16 +133,25 @@ export default function MusicPlayer({
     )
   }
 
+  if (!videoId) {
+    return (
+      <aside className="festival-player-status" aria-label="Music">
+        <div className="festival-shell">
+          <span className="festival-player-disc" aria-hidden="true" />
+          <p><strong>{artist}</strong>{trackName}</p>
+        </div>
+      </aside>
+    )
+  }
+
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 border-t-2 border-[#D81E1E]"
          style={{ backgroundColor: 'rgba(10,10,10,0.97)', backdropFilter: 'blur(12px)' }}>
 
       {/* Hidden YouTube iframe */}
-      {videoId && (
-        <div style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', opacity: 0, pointerEvents: 'none' }}>
-          <div id={iframeId} />
-        </div>
-      )}
+      <div style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', opacity: 0, pointerEvents: 'none' }}>
+        <div id={iframeId} />
+      </div>
 
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4 md:gap-6">
 
@@ -172,13 +181,14 @@ export default function MusicPlayer({
         {/* Controls */}
         <div className="flex flex-1 flex-col items-center gap-1.5 min-w-0">
           <button onClick={togglePlay}
-                  disabled={!ready && !!videoId}
+                  disabled={!ready}
+                  aria-label={playing ? 'Pause track' : 'Play track'}
                   className="w-9 h-9 flex items-center justify-center text-white transition-all hover:scale-110"
                   style={{
-                    backgroundColor: ready || !videoId ? '#D81E1E' : '#444',
+                    backgroundColor: ready ? '#D81E1E' : '#444',
                     clipPath: 'polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)',
                   }}>
-            {!ready && videoId ? (
+            {!ready ? (
               <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : playing ? (
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -214,22 +224,16 @@ export default function MusicPlayer({
 
         {/* Volume */}
         <div className="hidden md:flex items-center gap-2 shrink-0 w-32">
-          <button onClick={toggleMute} className="text-[#888] hover:text-[#D81E1E] transition-colors shrink-0">
+          <button onClick={toggleMute} aria-label={muted ? 'Unmute track' : 'Mute track'} className="text-[#888] hover:text-[#D81E1E] transition-colors shrink-0">
             <VolumeIcon />
           </button>
-          <input type="range" min="0" max="100" step="1"
+          <input type="range" aria-label="Volume" min="0" max="100" step="1"
                  value={muted ? 0 : volume}
                  onChange={changeVolume}
                  className="flex-1 h-1 appearance-none cursor-pointer"
                  style={{ accentColor: '#D81E1E' }} />
         </div>
 
-        {/* No source notice */}
-        {!videoId && (
-          <span className="text-[#555] text-xs uppercase tracking-widest hidden sm:block">
-            No track loaded
-          </span>
-        )}
       </div>
 
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
