@@ -88,31 +88,29 @@ function Hero() {
 
   return (
     <section className="festival-hero" aria-labelledby="festival-title">
-      <div className="festival-shell festival-hero-grid">
+      <div className="festival-hero-media">
+        <video ref={video} muted loop playsInline preload="metadata" aria-hidden="true"
+               poster="/trapaganza-hero-poster.webp" src="/trapaganza-hero.mp4"
+               onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)}
+               onError={() => setMotionUnavailable(true)} />
+      </div>
+      <div className="festival-shell festival-hero-inner">
         <div className="festival-hero-copy">
-          <p className="festival-kicker">Trap Street Radio presents</p>
-          <h1 id="festival-title">TRAPAGANZA <span>26</span></h1>
+          <h1 id="festival-title" className="sr-only">TRAPAGANZA 26</h1>
           <p className="festival-hero-date">
             <time dateTime="2026-06-13T20:30:00-04:00">June 13, 2026 · 8:30 PM ET</time>
-            <span>Live in VRChat</span>
+            <span>VRChat · Hosted by Goddesz609vr</span>
           </p>
           <div className="festival-actions">
             <a href="#lineup" className="btn-angled btn-red">Explore the Lineup</a>
             <a href="#event" className="btn-angled btn-outline-white">Event Info</a>
           </div>
         </div>
-
-        <div className="festival-hero-media">
-          <video ref={video} muted loop playsInline preload="metadata" aria-hidden="true"
-                 poster="/trapaganza-hero-poster.webp" src="/trapaganza-hero.mp4"
-                 onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)}
-                 onError={() => setMotionUnavailable(true)} />
-          {!motionUnavailable && (
-            <button type="button" className="festival-motion-control" onClick={toggleMotion}>
-              {playing ? 'Pause animation' : 'Play animation'}
-            </button>
-          )}
-        </div>
+        {!motionUnavailable && (
+          <button type="button" className="festival-motion-control" onClick={toggleMotion}>
+            {playing ? 'Pause animation' : 'Play animation'}
+          </button>
+        )}
       </div>
     </section>
   )
